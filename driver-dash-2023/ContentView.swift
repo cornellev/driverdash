@@ -9,8 +9,9 @@ import SwiftUI
 import CoreBluetooth
 
 // see https://youtu.be/n-f0BwxKSD0
+// also see https://www.kodeco.com/231-core-bluetooth-tutorial-for-ios-heart-rate-monitor
 class BluetoothViewModel: NSObject, ObservableObject {
-    private var centralManager: CBCentralManager?
+    private var centralManager: CBCentralManager!
     private var peripherals: [CBPeripheral] = []
     
     @Published var device: CBPeripheral?
@@ -25,8 +26,22 @@ class BluetoothViewModel: NSObject, ObservableObject {
 
 extension BluetoothViewModel: CBCentralManagerDelegate {
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        if central.state == .poweredOn {
-            self.centralManager?.scanForPeripherals(withServices: nil)
+        switch central.state {
+          case .unknown:
+            print("central.state is .unknown")
+          case .resetting:
+            print("central.state is .resetting")
+          case .unsupported:
+            print("central.state is .unsupported")
+          case .unauthorized:
+            print("central.state is .unauthorized")
+          case .poweredOff:
+            print("central.state is .poweredOff")
+          case .poweredOn:
+            print("central.state is .poweredOn")
+            self.centralManager.scanForPeripherals(withServices: nil)
+        @unknown default:
+            print("central.state fell to unknown default switch case")
         }
     }
     
@@ -37,8 +52,21 @@ extension BluetoothViewModel: CBCentralManagerDelegate {
             // production and testing
             if name == "ESP32test" {
                 self.device = peripheral
+                // we found it, so we can stop
+                centralManager.stopScan()
+                centralManager.connect(peripheral)
             }
         }
+    }
+    
+    // don't need if statements since we're only connecting to the desired peripheral
+    func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
+        print("Successfully connected!")
+    }
+    
+    // stay up to date on whether or not there's a connection
+    func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
+        self.device = nil
     }
 }
 
