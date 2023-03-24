@@ -7,13 +7,32 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct DataView: View {
+    var title: String
+    var units: String
+    var value: Double = 0
+    
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+            // title styling
+            Text(title)
+                .font(.title).bold()
+                .padding([.leading, .trailing], 100)
+            Text(units)
+            
+            // handle data display
+            Text(String(format: "%.2f", value))
+                .font(.system(size: 32, design: .monospaced))
+                .padding(10)
+        }
+    }
+}
+
+struct ContentView: View {
+    var body: some View {
+        HStack {
+            DataView(title: "Power", units: "kmph")
+            DataView(title: "Speed", units: "km/kWh")
         }
         .padding()
     }
