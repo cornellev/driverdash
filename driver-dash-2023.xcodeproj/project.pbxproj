@@ -19,6 +19,7 @@
 		96DDBA6629CE396000165A9F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		96DDBA6829CE396100165A9F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		96DDBA6B29CE396100165A9F /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		96DDBA7229CE481600165A9F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,6 +52,7 @@
 		96DDBA6329CE396000165A9F /* driver-dash-2023 */ = {
 			isa = PBXGroup;
 			children = (
+				96DDBA7229CE481600165A9F /* Info.plist */,
 				96DDBA6429CE396000165A9F /* driver_dash_2023App.swift */,
 				96DDBA6629CE396000165A9F /* ContentView.swift */,
 				96DDBA6829CE396100165A9F /* Assets.xcassets */,
@@ -270,6 +272,9 @@
 				DEVELOPMENT_TEAM = 4Q2GFL24PH;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "driver-dash-2023/Info.plist";
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Bluetooth is required for the CEV Driver Dashboard.";
+				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "Bluetooth is required for the CEV Driver Dashboard.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -300,6 +305,9 @@
 				DEVELOPMENT_TEAM = 4Q2GFL24PH;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "driver-dash-2023/Info.plist";
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "Bluetooth is required for the CEV Driver Dashboard.";
+				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "Bluetooth is required for the CEV Driver Dashboard.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
