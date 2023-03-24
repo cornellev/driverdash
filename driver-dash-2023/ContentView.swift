@@ -13,7 +13,7 @@ class BluetoothViewModel: NSObject, ObservableObject {
     private var centralManager: CBCentralManager?
     private var peripherals: [CBPeripheral] = []
     
-    @Published var peripheralNames: [String] = []
+    @Published var device: CBPeripheral?
     
     override init() {
         super.init()
@@ -22,6 +22,7 @@ class BluetoothViewModel: NSObject, ObservableObject {
     }
 }
 
+
 extension BluetoothViewModel: CBCentralManagerDelegate {
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         if central.state == .poweredOn {
@@ -29,15 +30,18 @@ extension BluetoothViewModel: CBCentralManagerDelegate {
         }
     }
     
-    // callback when we receive a bluetooth signal I think
+    // callback when we receive a bluetooth discovery signal I think
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
         
-        if !peripherals.contains(peripheral) {
-            self.peripherals.append(peripheral)
-            self.peripheralNames.append(peripheral.name ?? "Unnamed Device")
+        if let name = peripheral.name {
+            // production and testing
+            if name == "ESP32test" {
+                self.device = peripheral
+            }
         }
     }
 }
+
 
 struct DataView: View {
     var title: String
@@ -64,8 +68,10 @@ struct ContentView: View {
     @ObservedObject private var bluetoothViewModel = BluetoothViewModel()
     
     var body: some View {
-        List(bluetoothViewModel.peripheralNames, id: \.self) { peripheral in
-            Text(peripheral)
+        if let device = bluetoothViewModel.device {
+            Text(device.name ?? "uh oh bad name")
+        } else {
+            Text("nothing connected yet")
         }
     }
 //    var body: some View {
