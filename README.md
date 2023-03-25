@@ -1,8 +1,10 @@
 # Driver Dash 2023
 
-_Jason Klein '26_
+_Jason Klein '26, Ari Kapelyan '25, Kalehiwot Dessalgne '25, Drew Wilenzick '26_
 
 A very quick solution to a driver dashboard for competition in less than two weeks (!) The core components of the dashboard are (1) live statistics from the DAQ that allow it to communicate current speed and power consumption to the driver and (2) the ability to archive all sorts of data like GPS for later analysis. So that's all that we're going to try to do here.
+
+Below is the JSON communication scheme (developed in coordination with Ari) used for communicating between the DAQ and the phone.
 
 ## Setup
 
