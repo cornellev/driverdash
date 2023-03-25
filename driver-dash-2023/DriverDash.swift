@@ -9,14 +9,30 @@ import SwiftUI
 
 @main
 struct DriverDash: App {
-    @ObservedObject private var model = DriverDashModel()
-    
     var body: some Scene {
         WindowGroup {
+            ContentView()
+        }
+    }
+}
+
+struct ContentView: View {
+    @ObservedObject private var model = DriverDashModel()
+    
+    var body: some View {
+        ZStack{
+            
             HStack {
+                DataView(title: "Lap Time", value: model.speed, units: "s")
                 DataView(title: "Speed", value: model.speed, units: "km/h")
                 DataView(title: "Power", value: model.power, units: "????")
             }.padding()
         }
+    }
+}
+
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
     }
 }

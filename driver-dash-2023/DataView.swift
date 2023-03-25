@@ -19,7 +19,7 @@ struct DataView: View {
             // title styling
             Text(title)
                 .font(.title).bold()
-                .padding([.leading, .trailing], 100)
+                .padding([.leading, .trailing], 70)
             Text(units)
             
             // handle data display
