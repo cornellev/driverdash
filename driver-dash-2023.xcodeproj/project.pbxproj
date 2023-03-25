@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		96DDBA6529CE396000165A9F /* driver_dash_2023App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96DDBA6429CE396000165A9F /* driver_dash_2023App.swift */; };
+		96DDBA6529CE396000165A9F /* DriverDashApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96DDBA6429CE396000165A9F /* DriverDashApp.swift */; };
 		96DDBA6729CE396000165A9F /* DataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96DDBA6629CE396000165A9F /* DataView.swift */; };
 		96DDBA6929CE396100165A9F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 96DDBA6829CE396100165A9F /* Assets.xcassets */; };
 		96DDBA6C29CE396100165A9F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 96DDBA6B29CE396100165A9F /* Preview Assets.xcassets */; };
@@ -17,7 +17,7 @@
 /* Begin PBXFileReference section */
 		4C36EEBAD79918737A62BD4E /* Pods_driver_dash_2023.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_driver_dash_2023.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		96DDBA6129CE396000165A9F /* driver-dash-2023.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "driver-dash-2023.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		96DDBA6429CE396000165A9F /* driver_dash_2023App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = driver_dash_2023App.swift; sourceTree = "<group>"; };
+		96DDBA6429CE396000165A9F /* DriverDashApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriverDashApp.swift; sourceTree = "<group>"; };
 		96DDBA6629CE396000165A9F /* DataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataView.swift; sourceTree = "<group>"; };
 		96DDBA6829CE396100165A9F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		96DDBA6B29CE396100165A9F /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -68,7 +68,7 @@
 			isa = PBXGroup;
 			children = (
 				96DDBA7229CE481600165A9F /* Info.plist */,
-				96DDBA6429CE396000165A9F /* driver_dash_2023App.swift */,
+				96DDBA6429CE396000165A9F /* DriverDashApp.swift */,
 				96DDBA6629CE396000165A9F /* DataView.swift */,
 				96DDBA6829CE396100165A9F /* Assets.xcassets */,
 				96DDBA6A29CE396100165A9F /* Preview Content */,
@@ -208,7 +208,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				96DDBA6729CE396000165A9F /* DataView.swift in Sources */,
-				96DDBA6529CE396000165A9F /* driver_dash_2023App.swift in Sources */,
+				96DDBA6529CE396000165A9F /* DriverDashApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
