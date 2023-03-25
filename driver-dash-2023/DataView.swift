@@ -11,8 +11,8 @@ import SwiftUI
 
 struct DataView: View {
     var title: String
-    var units: String
     var value: Double = 0
+    var units: String
     
     var body: some View {
         VStack {
