@@ -8,16 +8,6 @@
 import SwiftUI
 import Swifter
 
-// todo: get the proper format from Ari
-struct Packet: Codable {
-    enum Variable: String, Codable {
-        case speed, power
-    }
-    
-    let type: Variable
-    let data: Double
-}
-
 
 class DriverDashModel: NSObject, ObservableObject {
     @Published var speed = 0.0
