@@ -24,7 +24,7 @@ struct DataView: View {
             
             // handle data display
             Text(String(format: "%.2f", value))
-                .font(.system(size: 32, design: .monospaced))
+                .font(.system(size: 48, design: .monospaced))
                 .padding(10)
         }
     }
