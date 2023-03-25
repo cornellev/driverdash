@@ -29,19 +29,3 @@ struct DataView: View {
         }
     }
 }
-
-struct ContentView: View {
-    var body: some View {
-        HStack {
-            DataView(title: "Speed", units: "km/h")
-            DataView(title: "Power", units: "?????")
-        }
-        .padding()
-    }
-}
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
-}
