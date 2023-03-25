@@ -9,8 +9,6 @@ import SwiftUI
 
 // see https://engineering.deptagency.com/state-of-swift-websockets
 
-
-
 struct DataView: View {
     var title: String
     var units: String
