@@ -19,12 +19,11 @@ struct DriverDash: App {
                     DataView(title: "Speed", value: model.speed, units: "km/h")
                         .frame(maxWidth: .infinity)
                     Divider()
-                    DataView(title: "Power", value: model.power, units: "????")
+                    DataView(title: "Power", value: model.power, units: "kw/h")
                         .frame(maxWidth: .infinity)
                 }
                 .frame(maxWidth: .infinity)
-                
-                MapView()
+                Polyline()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
             .padding()
