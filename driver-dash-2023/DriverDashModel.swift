@@ -24,22 +24,36 @@ class DriverDashModel: NSObject, ObservableObject {
         // make it easy to check whether the server is alive
         server["/ping"] = { request in return .ok(.text("pong")) }
         
-        // handle websocket connections. Assumes everything is JSON
-        server["/websocket"] = websocket(text: { session, text in
+        //handles back daq
+        server["/back-daq"] = websocket(text: { session, text in
             // see https://stackoverflow.com/a/53569348 and also
             // https://www.avanderlee.com/swift/json-parsing-decoding/ for JSON decoding
-            let json = try! JSONDecoder().decode(Packet.self, from: text.data(using: .utf8)!)
+            let json = try! JSONDecoder().decode(BackPacket.self, from: text.data(using: .utf8)!)
             
-            switch json.type {
-                // see https://stackoverflow.com/a/74318451
-            case .power: DispatchQueue.main.async {
-                    self.power = json.data
-                }
-            case .speed: DispatchQueue.main.async {
-                    self.speed = json.data
-                }
+            // see https://stackoverflow.com/a/74318451
+            DispatchQueue.main.async {
+                self.power = json.bms ?? self.power
             }
+            
+            let timestamp = getTimestamp()
+            // todo: save to file with timestamp
         })
+        
+        //handle front daq
+        server["/front-daq"] = websocket(text: { session, text in
+            // see https://stackoverflow.com/a/53569348 and also
+            // https://www.avanderlee.com/swift/json-parsing-decoding/ for JSON decoding
+            let json = try! JSONDecoder().decode(FrontPacket.self, from: text.data(using: .utf8)!)
+            
+            let timestamp = getTimestamp()
+            // todo: save to file with timestamp
+        })
+        
+        func getTimestamp() -> String {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd:HH:mm:ss.SSSSS"
+            return dateFormatter.string(from: Date())
+        }
         
         do {
             try server.start(8080)
