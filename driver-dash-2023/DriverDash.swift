@@ -11,12 +11,25 @@ import SwiftUI
 struct DriverDash: App {
     @ObservedObject private var model = DriverDashModel()
     
+    //organize the visual such that data is on lefthand side and map on the right
     var body: some Scene {
         WindowGroup {
             HStack {
-                DataView(title: "Speed", value: model.speed, units: "km/h")
-                DataView(title: "Power", value: model.power, units: "????")
-            }.padding()
+                VStack(spacing: 0) {
+                    DataView(title: "Speed", value: model.speed, units: "km/h")
+                        .frame(maxWidth: .infinity)
+                    Divider()
+                    DataView(title: "Power", value: model.power, units: "????")
+                        .frame(maxWidth: .infinity)
+                }
+                .frame(maxWidth: .infinity)
+                
+                MapView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+            .padding()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color.white)
         }
     }
 }
