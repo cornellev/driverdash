@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "96DDBA6029CE396000165A9F"
-               BuildableName = "driver-dash-2023.app"
+               BuildableName = "DriverDash.app"
                BlueprintName = "driver-dash-2023"
                ReferencedContainer = "container:driver-dash-2023.xcodeproj">
             </BuildableReference>
@@ -45,7 +45,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "96DDBA6029CE396000165A9F"
-            BuildableName = "driver-dash-2023.app"
+            BuildableName = "DriverDash.app"
             BlueprintName = "driver-dash-2023"
             ReferencedContainer = "container:driver-dash-2023.xcodeproj">
          </BuildableReference>
@@ -62,7 +62,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "96DDBA6029CE396000165A9F"
-            BuildableName = "driver-dash-2023.app"
+            BuildableName = "DriverDash.app"
             BlueprintName = "driver-dash-2023"
             ReferencedContainer = "container:driver-dash-2023.xcodeproj">
          </BuildableReference>
