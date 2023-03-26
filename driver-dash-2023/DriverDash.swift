@@ -22,7 +22,7 @@ struct ContentView: View {
     var body: some View {
         HStack {
             DataView(title: "Speed", value: model.speed, units: "km/h")
-            DataView(title: "Power", value: model.power, units: "????")
+            DataView(title: "Power", value: model.power, units: "kW/h")
         }.padding()
     }
 }
