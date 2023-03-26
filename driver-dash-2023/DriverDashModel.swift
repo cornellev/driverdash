@@ -49,14 +49,29 @@ class DriverDashModel: NSObject, ObservableObject {
         server["/back-daq"] = websocket(text: { session, text in
             // see https://stackoverflow.com/a/53569348 and also
             // https://www.avanderlee.com/swift/json-parsing-decoding/ for JSON decoding
-            let json = try! JSONDecoder().decode(BackPacket.self, from: text.data(using: .utf8)!)
+            var json = try! JSONDecoder().decode(BackPacket.self, from: text.data(using: .utf8)!)
             
             // see https://stackoverflow.com/a/74318451
             DispatchQueue.main.async {
                 self.power = json.bms ?? self.power
             }
             
-            // todo: save to file with timestamp
+            // save to file with timestamp. requires location
+            if let location = self.location {
+                // if no RTK, fill with phone location
+                if json.rtk == nil {
+                    json.rtk = BackPacket.RTK(
+                        latitude: location.coordinate.latitude,
+                        longitude: location.coordinate.longitude)
+                }
+                
+                let encoded = try! JSONEncoder().encode(json)
+                let timestamp = getTimestampString(from: location.timestamp)
+                UserDefaults.standard.set(encoded, forKey: timestamp)
+                
+                print(try! JSONDecoder().decode(BackPacket.self,
+                                                from: (UserDefaults.standard.value(forKey: timestamp) as? Data)!))
+            }
         })
         
         //handle front daq
@@ -68,10 +83,10 @@ class DriverDashModel: NSObject, ObservableObject {
             // todo: save to file with timestamp
         })
         
-        func getTimestamp() -> String {
+        func getTimestampString(from date: Date = Date()) -> String {
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "yyyy-MM-dd:HH:mm:ss.SSSSS"
-            return dateFormatter.string(from: Date())
+            return dateFormatter.string(from: date)
         }
         
         do {
