@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		96A6063C29D102E800FC98F2 /* Saving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A6063B29D102E800FC98F2 /* Saving.swift */; };
 		96DDBA6529CE396000165A9F /* DriverDash.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96DDBA6429CE396000165A9F /* DriverDash.swift */; };
 		96DDBA6729CE396000165A9F /* DataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96DDBA6629CE396000165A9F /* DataView.swift */; };
 		96DDBA6929CE396100165A9F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 96DDBA6829CE396100165A9F /* Assets.xcassets */; };
@@ -19,7 +18,6 @@
 
 /* Begin PBXFileReference section */
 		4C36EEBAD79918737A62BD4E /* Pods_driver_dash_2023.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_driver_dash_2023.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		96A6063B29D102E800FC98F2 /* Saving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Saving.swift; sourceTree = "<group>"; };
 		96DDBA6129CE396000165A9F /* DriverDash.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DriverDash.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		96DDBA6429CE396000165A9F /* DriverDash.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriverDash.swift; sourceTree = "<group>"; };
 		96DDBA6629CE396000165A9F /* DataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataView.swift; sourceTree = "<group>"; };
@@ -74,7 +72,6 @@
 			isa = PBXGroup;
 			children = (
 				96DDBA7229CE481600165A9F /* Info.plist */,
-				96A6063B29D102E800FC98F2 /* Saving.swift */,
 				96DDBA6429CE396000165A9F /* DriverDash.swift */,
 				96DDBA7329CED51A00165A9F /* DriverDashModel.swift */,
 				96DDBA6629CE396000165A9F /* DataView.swift */,
@@ -216,7 +213,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				96A6063C29D102E800FC98F2 /* Saving.swift in Sources */,
 				96DDBA6729CE396000165A9F /* DataView.swift in Sources */,
 				96DDBA7429CED51A00165A9F /* DriverDashModel.swift in Sources */,
 				96DDBA6529CE396000165A9F /* DriverDash.swift in Sources */,

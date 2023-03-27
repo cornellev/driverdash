@@ -6,8 +6,8 @@
 //
 
 import SwiftUI
-import Swifter
 import CoreLocation
+import SwiftSocket
 
 // have two UserDefaults keys, one for front-daq and one for back-daq
 // each one has the timestamp: { data } format I outlined for Drew
@@ -19,7 +19,7 @@ class DriverDashModel: NSObject, ObservableObject {
     @Published var speed = 0.0
     @Published var power = 0.0
     
-    private var server: HttpServer!
+//    private var server: HttpServer!
     private var locationManager: CLLocationManager!
     
     private var location: CLLocation?
@@ -41,6 +41,10 @@ class DriverDashModel: NSObject, ObservableObject {
 //        
 //        frontFile = try! FileHandle(forWritingTo: getURLFor(name: "front-daq.json"))
 //        backFile = try! FileHandle(forWritingTo: getURLFor(name: "back-daq.json"))
+//        func getURLFor(name: String) -> URL {
+//            let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+//            return paths.first!.appendingPathComponent(name, conformingTo: .text)
+//        }
         
         // set up phone GPS tracking
         locationManager = CLLocationManager()
@@ -51,6 +55,39 @@ class DriverDashModel: NSObject, ObservableObject {
         
         locationManager.startUpdatingLocation()
         
+        // set address to the IP address of *the phone*
+        let server = TCPServer(address: "172.20.10.1", port: 8080)
+        switch server.listen() {
+          case .success:
+            print("Server listening!")
+            while true {
+                if let client = server.accept() {
+                    print("Newclient from: \(client.address):\(client.port)")
+                    // expect to first get four bytes with the length of the next packet
+                    // see https://stackoverflow.com/a/32770113
+                    
+                    let data = Data(bytes: client.read(4)!, count: 4)
+                    let length = UInt32(bigEndian: data.withUnsafeBytes {
+                        (pointer: UnsafeRawBufferPointer) -> UInt32 in return pointer.load(as: UInt32.self)
+                    })
+                    
+                    if let content = String(bytes: client.read(Int(length))!, encoding: .utf8) {
+                        print(content)
+                    }
+                    
+                    var _ = client.send(string: "g")
+                    client.close()
+                } else {
+                    print("accept error")
+                }
+            }
+            
+          case .failure(let error):
+            print("error")
+            // print(error)
+        }
+        
+        /*
         // see https://github.com/httpswift/swifter
         self.server = HttpServer()
         
@@ -115,6 +152,7 @@ class DriverDashModel: NSObject, ObservableObject {
         } catch let error {
             print(error.localizedDescription)
         }
+         */
     }
 }
 
