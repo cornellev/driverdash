@@ -18,6 +18,7 @@ extension DriverDashController {
         let controller: DriverDashController!
         
         init(controller: DriverDashController) {
+            // reference needed so we can update state
             self.controller = controller
             super.init()
         }
@@ -65,8 +66,14 @@ extension DriverDashController {
                         // since changing the model updates the UI, we have to make updates on the main thread.
                         // this will update as soon as the main thread is able.
                         DispatchQueue.main.async {
-                            // todo: not always a defined value
-                            self.controller.model.power = json.voltage!
+                            if let power = json.voltage {
+                                self.controller.model.power = power
+                            }
+                            
+                            if let rpm = json.rpm {
+                                // todo: use circumference/diameter of wheel
+                                self.controller.model.speed = Double(rpm) / 5
+                            }
                         }
                         
                         print(json)

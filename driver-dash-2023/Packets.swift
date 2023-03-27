@@ -67,6 +67,16 @@ func decodeFrontDAQ(from payload: Data) -> FrontPacket {
     }
 }
 
+func encodeFrontDAQ(from packet: FrontPacket) -> String {
+    do {
+        let encoded = try JSONEncoder().encode(packet)
+        return String(data: encoded, encoding: .utf8)!
+    } catch let error {
+        print("decodeFrontDAQ error: \(error.localizedDescription)")
+        return ""
+    }
+}
+
 func decodeBackDAQ(from payload: String) -> BackPacket {
     return decodeBackDAQ(from: payload.data(using: .utf8)!)
 }
@@ -77,5 +87,15 @@ func decodeBackDAQ(from payload: Data) -> BackPacket {
     } catch let error {
         print("decodeBackDAQ error: \(error.localizedDescription)")
         return BackPacket()
+    }
+}
+
+func encodeBackDAQ(from packet: BackPacket) -> String {
+    do {
+        let encoded = try JSONEncoder().encode(packet)
+        return String(data: encoded, encoding: .utf8)!
+    } catch let error {
+        print("decodeBackDAQ error: \(error.localizedDescription)")
+        return ""
     }
 }
