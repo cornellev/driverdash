@@ -48,28 +48,28 @@ class DriverDashModel: NSObject, ObservableObject {
                 if let client = server.accept() {
                     print("Newclient from: \(client.address):\(client.port)")
                     
-                    while true {
+                    while var bytes = client.read(4) {
                         // expect to first get four bytes with the length of the next packet
-                        let read = client.read(4)!
-                        let data = Data(bytes: read, count: 4)
+                        print(bytes.description)
+                        let data = Data(bytes: bytes, count: 4)
                         let length = UInt32(littleEndian: data.withUnsafeBytes {
                             // see https://stackoverflow.com/a/32770113
                             (pointer: UnsafeRawBufferPointer) -> UInt32 in return pointer.load(as: UInt32.self)
-                        })
+                        })                        
                         
+                        bytes = client.read(Int(length))!
                         // all data sent to the server will be valid json
-                        if let content = String(bytes: client.read(Int(length))!, encoding: .utf8) {
+                        if let content = String(bytes: bytes, encoding: .utf8) {
                             do {
                                 let json = try JSONDecoder().decode(BackPacket.self, from: content.data(using: .utf8)!)
                                 let encoder = JSONEncoder()
                                 encoder.outputFormatting = .prettyPrinted
-                                print(try encoder.encode(json))
+                                
+                                print(json)
                                 
                             } catch let error {
                                 print("Error reading JSON: \(error.localizedDescription)")
                             }
-                            
-                            print(content)
                         }
                     }
                     // var _ = client.send(string: "g")
