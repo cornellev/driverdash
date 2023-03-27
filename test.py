@@ -2,7 +2,7 @@ import socket
 import time
 
 # set IP address and port number
-IP_ADDRESS = "10.48.155.202"
+IP_ADDRESS = "172.20.10.1"
 PORT = 8080
 
 # create a TCP socket object

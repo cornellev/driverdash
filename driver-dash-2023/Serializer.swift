@@ -68,6 +68,7 @@ class Serializer: NSObject {
     
     func getTimestamp(from date: Date) -> String {
         let dateFormatter = DateFormatter()
+        dateFormatter.timeZone = TimeZone(abbreviation: "GMT")!
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSSSS"
         return dateFormatter.string(from: date)
     }
