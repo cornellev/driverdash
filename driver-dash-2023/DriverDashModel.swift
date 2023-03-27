@@ -6,8 +6,8 @@
 //
 
 import SwiftUI
-import CoreLocation
 import SwiftSocket
+import CoreLocation
 
 // have two UserDefaults keys, one for front-daq and one for back-daq
 // each one has the timestamp: { data } format I outlined for Drew
@@ -19,28 +19,13 @@ class DriverDashModel: NSObject, ObservableObject {
     @Published var speed = 0.0
     @Published var power = 0.0
     
-//    private var server: HttpServer!
-    private var locationManager: CLLocationManager!
-    
-    private var location: CLLocation?
-    
-    private var frontFile: FileHandle!
-    private var backFile: FileHandle!
-    
+    var location: CLLocation?
+
     override init() {
         super.init()
         
-        // set up phone GPS tracking
-        locationManager = CLLocationManager()
-        // not sure what I want the accuracy level to be
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.requestWhenInUseAuthorization()
-        locationManager.delegate = self
-        
-        locationManager.startUpdatingLocation()
-        
         // set address to the IP address of *the phone*
-        let server = TCPServer(address: "172.20.10.1", port: 8080)
+        let server = TCPServer(address: "10.48.155.202", port: 8080)
         switch server.listen() {
           case .success:
             print("Server listening!")
@@ -48,13 +33,12 @@ class DriverDashModel: NSObject, ObservableObject {
                 if let client = server.accept() {
                     print("Newclient from: \(client.address):\(client.port)")
                     
+                    // receive length of packet in 4 bytes
                     while var bytes = client.read(4) {
-                        // expect to first get four bytes with the length of the next packet
-                        print(bytes.description)
                         let data = Data(bytes: bytes, count: 4)
                         let length = UInt32(littleEndian: data.withUnsafeBytes {
                             // see https://stackoverflow.com/a/32770113
-                            (pointer: UnsafeRawBufferPointer) -> UInt32 in return pointer.load(as: UInt32.self)
+                            pointer in return pointer.load(as: UInt32.self)
                         })                        
                         
                         bytes = client.read(Int(length))!
@@ -82,6 +66,7 @@ class DriverDashModel: NSObject, ObservableObject {
             
           case .failure(let error):
             print(error.localizedDescription)
+            print("You probably have the wrong phone IP address")
         }
         
         /*
@@ -150,19 +135,5 @@ class DriverDashModel: NSObject, ObservableObject {
             print(error.localizedDescription)
         }
          */
-    }
-}
-
-extension DriverDashModel: CLLocationManagerDelegate {
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        //. keep the current location up to date as much as possible
-        if let location = locations.last {
-            self.location = location
-        }
-    }
-    
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        // todo: is there a better way to handle errors than this?
-        print("Whoopsies. Had trouble getting the location.")
     }
 }
