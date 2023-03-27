@@ -13,8 +13,17 @@ let ADDRESS = "10.48.155.202"
 let PORT = 8080
 
 extension DriverDashController {
+    
+    class ServerThread: Thread {
+        override func main() {
+            print("hi from a thread!")
+        }
+    }
        
     func initServer() {
+        let thread = ServerThread()
+        thread.start()
+        
         let server = TCPServer(address: ADDRESS, port: Int32(PORT))
         
         switch server.listen() {
@@ -38,7 +47,11 @@ extension DriverDashController {
         print("New client from: \(client.address):\(client.port)")
         
         // receive length of packet in 4 bytes
-        while var bytes = client.read(4) {
+        fetchPacket(from: client)
+    }
+    
+    func fetchPacket(from client: TCPClient) {
+        if var bytes = client.read(4) {
             let data = Data(bytes: bytes, count: 4)
             let length = UInt32(littleEndian: data.withUnsafeBytes {
                 // see https://stackoverflow.com/a/32770113
@@ -59,6 +72,8 @@ extension DriverDashController {
                     print("Error reading JSON: \(error.localizedDescription)")
                 }
             }
+        } else {
+            print("Tried to fetch a packet but there wasn't one.")
         }
     }
     
