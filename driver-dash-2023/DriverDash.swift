@@ -19,6 +19,12 @@ struct DriverDash: App {
 struct ContentView: View {
     @ObservedObject private var model = DriverDashModel()
     
+    private var controller: DriverDashController!
+    
+    init() {
+        controller = DriverDashController(model: model)
+    }
+    
     var body: some View {
         HStack {
             DataView(title: "Speed", value: model.speed, units: "km/h")
