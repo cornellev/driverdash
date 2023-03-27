@@ -30,15 +30,61 @@ struct DataView: View {
         HStack{}
     }
 }
+// Watch this vid for the bottom structs: https://www.youtube.com/watch?v=hWMkimzIQoU
 
-//create a map visual 
+//creates the map 
 struct MapView: View {
-    @State var region = MKCoordinateRegion(
+    @StateObject private var viewModel: MapViewModel = MapViewModel()
+    @State var region: MKCoordinateRegion = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 39.7954, longitude: -86.2353),
-        span: MKCoordinateSpan(latitudeDelta: 0.5, longitudeDelta: 0.5)
+        span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
     )
 
     var body: some View {
-        Map(coordinateRegion: $region)
+        Map(coordinateRegion: $region, showsUserLocation: true).ignoresSafeArea().onAppear(){
+            viewModel.checkLocationServicesAreEnabled()
+        }
+
+    }
+}
+struct MapView_Previews: PreviewProvider {
+    static var previews: some View {
+        MapView()
+    }
+}
+
+//handles the authorization to allow use of locations
+final class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate{
+
+    var locationManager: CLLocationManager?
+
+    func checkLocationServicesAreEnabled(){
+        if CLLocationManager.locationServicesEnabled(){
+            locationManager = CLLocationManager()
+            locationManager!.delegate = self
+            print("Show alert")
+        }
+    }
+
+    private func checkLocationAuthorization(){
+        guard let locationManager: CLLocationManager = locationManager else{return}
+
+        switch locationManager.authorizationStatus {
+
+            case .notDetermined:
+                locationManager.requestWhenInUseAuthorization()
+            case .restricted:
+                print("restricted")
+            case .denied:
+                print("denied")
+            case .authorizedAlways, .authorizedWhenInUse:
+                break
+            @unknown default:
+                break
+        }
+    }
+
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        checkLocationAuthorization()
     }
 }
