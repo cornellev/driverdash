@@ -18,11 +18,13 @@ struct DriverDash: App {
 
 struct ContentView: View {
     @ObservedObject private var model = DriverDashModel()
-    
-    private var controller: DriverDashController!
+
+    private var serverController: DDServer!
+    private var locationController: DDLocation!
     
     init() {
-        controller = DriverDashController(model: model)
+        self.serverController = DDServer(with: model)
+        self.locationController = DDLocation(with: model)
     }
     
     var body: some View {

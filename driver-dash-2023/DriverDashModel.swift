@@ -13,8 +13,4 @@ class DriverDashModel: NSObject, ObservableObject {
     @Published var power = 0.0
     
     var location: CLLocation?
-
-    override init() {
-        super.init()
-    }
 }
