@@ -62,7 +62,17 @@ extension DriverDashController {
                 if let content = String(bytes: bytes, encoding: .utf8) {
                     do {
                         // todo: how to decide whether it's a BackPacket or FrontPacket?
-                        let json = try JSONDecoder().decode(BackPacket.self, from: content.data(using: .utf8)!)
+                        var json = try JSONDecoder().decode(BackPacket.self, from: content.data(using: .utf8)!)
+                        
+                        // phone's location is better than nothing
+                        if let location = self.controller.model.location {
+                            if json.rtk == nil {
+                                json.rtk = BackPacket.RTK(
+                                    latitude: location.coordinate.latitude,
+                                    longitude: location.coordinate.longitude)
+                            }
+                        }
+                        
                         let encoder = JSONEncoder()
                         encoder.outputFormatting = .prettyPrinted
                         
