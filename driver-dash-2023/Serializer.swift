@@ -17,18 +17,23 @@ class Serializer: NSObject {
     let backFile: FileHandle!
     
     override init() {
-        // create files if they don't exist
-        if !fileManager.fileExists(atPath: frontFilePath.absoluteString) {
-            fileManager.createFile(atPath: frontFilePath.absoluteString, contents: nil)
+        // create empty files if they don't exist
+        if !fileManager.fileExists(atPath: frontFilePath.path) {
+            fileManager.createFile(atPath: frontFilePath.path, contents: nil, attributes: nil)
         }
         
-        if !fileManager.fileExists(atPath: backFilePath.absoluteString) {
-            fileManager.createFile(atPath: backFilePath.absoluteString, contents: nil)
+        if !fileManager.fileExists(atPath: backFilePath.path) {
+            fileManager.createFile(atPath: backFilePath.path, contents: nil, attributes: nil)
         }
         
         // open files for writing
-        frontFile = try! FileHandle(forWritingTo: frontFilePath)
-        backFile = try! FileHandle(forWritingTo: backFilePath)
+        frontFile = FileHandle(forWritingAtPath: frontFilePath.path) //FileHandle(forWritingTo: frontFilePath)
+        backFile = FileHandle(forWritingAtPath: backFilePath.path) // try! FileHandle(forWritingTo: backFilePath)
+        
+//        try! backFile.write(contentsOf: "2023-03-27T02:37:00Z {\"rpm\":300,\"voltage\":24.100000000000001,\"safety\":1}\n".data(using: .utf8)!)
+//        try! backFile.seekToEnd()
+//        try! backFile.write(contentsOf: "2023-03-27T02:37:00Z {\"rpm\":300,\"voltage\":24.100000000000001,\"safety\":1}\n".data(using: .utf8)!)
+        
         
         defer {
             // close files when done with them
@@ -41,11 +46,10 @@ class Serializer: NSObject {
     
     func serialize(data: FrontPacket) {
         let stringified = encodeFrontDAQ(from: data)
-        let timestamp = ISO8601DateFormatter().string(from: localDate())
+        let timestamp = getTimestamp(from: localDate())
         
         do {
-            let _ = try self.frontFile.seekToEnd()
-            try self.frontFile.write(contentsOf: "\(timestamp) \(stringified)".data(using: .utf8)!)
+            try "\(timestamp) \(stringified)\n".appendToURL(fileURL: backFilePath)
         } catch let error {
             print("Error serializing: \(error.localizedDescription)")
         }
@@ -53,11 +57,10 @@ class Serializer: NSObject {
 
     func serialize(data: BackPacket) {
         let stringified = encodeBackDAQ(from: data)
-        let timestamp = ISO8601DateFormatter().string(from: localDate())
+        let timestamp = getTimestamp(from: localDate())
         
         do {
-            let _ = try self.backFile.seekToEnd()
-            try self.backFile.write(contentsOf: "\(timestamp) \(stringified)".data(using: .utf8)!)
+            try "\(timestamp) \(stringified)\n".appendToURL(fileURL: backFilePath)
         } catch let error {
             print("Error serializing: \(error.localizedDescription)")
         }
@@ -66,6 +69,12 @@ class Serializer: NSObject {
     static func pathInDocuments(_ path: String) -> URL {
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         return paths.first!.appendingPathComponent(path, conformingTo: .text)
+    }
+    
+    func getTimestamp(from date: Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSSSS"
+        return dateFormatter.string(from: date)
     }
     
     func localDate() -> Date {
@@ -78,5 +87,29 @@ class Serializer: NSObject {
         let SystemGMTOffset: Int = SystemTimeZone.secondsFromGMT(for: currentDate)
         let interval = TimeInterval((SystemGMTOffset - currentGMTOffset!))
         return Date(timeInterval: interval, since: currentDate)
+    }
+}
+
+
+// super helpful snippet from https://stackoverflow.com/a/60199550
+extension String {
+    func appendToURL(fileURL: URL) throws {
+        let data = self.data(using: String.Encoding.utf8)!
+        try data.append(fileURL: fileURL)
+    }
+}
+
+extension Data {
+    func append(fileURL: URL) throws {
+        if let fileHandle = FileHandle(forWritingAtPath: fileURL.path) {
+            defer {
+                fileHandle.closeFile()
+            }
+            fileHandle.seekToEndOfFile()
+            fileHandle.write(self)
+        }
+        else {
+            try write(to: fileURL, options: .atomic)
+        }
     }
 }

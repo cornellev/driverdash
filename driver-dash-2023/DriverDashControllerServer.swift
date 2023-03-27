@@ -16,10 +16,12 @@ extension DriverDashController {
     
     class ServerThread: Thread {
         let controller: DriverDashController!
+        let serializer: Serializer!
         
         init(controller: DriverDashController) {
             // reference needed so we can update state
             self.controller = controller
+            self.serializer = Serializer()
             super.init()
         }
         
@@ -74,6 +76,12 @@ extension DriverDashController {
                                 // todo: use circumference/diameter of wheel
                                 self.controller.model.speed = Double(rpm) / 5
                             }
+                        }
+                        
+                        // also defer file-writing to be async, but use a serial
+                        // queue so we don't try writing at the same time
+                        DispatchQueue.main.sync {
+                            self.serializer.serialize(data: json)
                         }
                         
                         print(json)
