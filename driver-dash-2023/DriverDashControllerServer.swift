@@ -73,8 +73,9 @@ extension DriverDashController {
                             }
                             
                             if let rpm = json.rpm {
-                                // todo: use circumference/diameter of wheel
-                                self.controller.model.speed = Double(rpm) / 5
+                                let diameter = 0.605 // meters
+                                let speed = Double(rpm) * diameter * Double.pi * 60 / 1000 // km/h
+                                self.controller.model.speed = speed
                             }
                         }
                         
