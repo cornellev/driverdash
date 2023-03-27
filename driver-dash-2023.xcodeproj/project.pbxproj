@@ -15,7 +15,7 @@
 		96DDBA6929CE396100165A9F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 96DDBA6829CE396100165A9F /* Assets.xcassets */; };
 		96DDBA6C29CE396100165A9F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 96DDBA6B29CE396100165A9F /* Preview Assets.xcassets */; };
 		96DDBA7429CED51A00165A9F /* DriverDashModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96DDBA7329CED51A00165A9F /* DriverDashModel.swift */; };
-		96DDBA7629CF503900165A9F /* Packets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96DDBA7529CF503900165A9F /* Packets.swift */; };
+		96DDBA7629CF503900165A9F /* Coder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96DDBA7529CF503900165A9F /* Coder.swift */; };
 		A3D2D3AAAD42FA3E6AEFE072 /* Pods_driver_dash_2023.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C36EEBAD79918737A62BD4E /* Pods_driver_dash_2023.framework */; };
 /* End PBXBuildFile section */
 
@@ -31,7 +31,7 @@
 		96DDBA6B29CE396100165A9F /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		96DDBA7229CE481600165A9F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		96DDBA7329CED51A00165A9F /* DriverDashModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriverDashModel.swift; sourceTree = "<group>"; };
-		96DDBA7529CF503900165A9F /* Packets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Packets.swift; sourceTree = "<group>"; };
+		96DDBA7529CF503900165A9F /* Coder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coder.swift; sourceTree = "<group>"; };
 		CFE4A190213BDEC6F6E38190 /* Pods-driver-dash-2023.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-driver-dash-2023.debug.xcconfig"; path = "Target Support Files/Pods-driver-dash-2023/Pods-driver-dash-2023.debug.xcconfig"; sourceTree = "<group>"; };
 		DD4C151644EEC88F59735C55 /* Pods-driver-dash-2023.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-driver-dash-2023.release.xcconfig"; path = "Target Support Files/Pods-driver-dash-2023/Pods-driver-dash-2023.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -65,6 +65,15 @@
 			path = Controllers;
 			sourceTree = "<group>";
 		};
+		965EE2BB29D233B9002BDA3D /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				965EE2B629D164BA002BDA3D /* Serializer.swift */,
+				96DDBA7529CF503900165A9F /* Coder.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
 		96DDBA5829CE396000165A9F = {
 			isa = PBXGroup;
 			children = (
@@ -86,13 +95,12 @@
 		96DDBA6329CE396000165A9F /* driver-dash-2023 */ = {
 			isa = PBXGroup;
 			children = (
+				965EE2BB29D233B9002BDA3D /* Utilities */,
 				965EE2B829D21AD5002BDA3D /* Controllers */,
 				96DDBA7229CE481600165A9F /* Info.plist */,
 				96DDBA6429CE396000165A9F /* DriverDash.swift */,
 				96DDBA7329CED51A00165A9F /* DriverDashModel.swift */,
 				96DDBA6629CE396000165A9F /* DataView.swift */,
-				96DDBA7529CF503900165A9F /* Packets.swift */,
-				965EE2B629D164BA002BDA3D /* Serializer.swift */,
 				96DDBA6829CE396100165A9F /* Assets.xcassets */,
 				96DDBA6A29CE396100165A9F /* Preview Content */,
 			);
@@ -236,7 +244,7 @@
 				965EE2B729D164BA002BDA3D /* Serializer.swift in Sources */,
 				96DDBA6529CE396000165A9F /* DriverDash.swift in Sources */,
 				965EE2B329D15807002BDA3D /* DDServer.swift in Sources */,
-				96DDBA7629CF503900165A9F /* Packets.swift in Sources */,
+				96DDBA7629CF503900165A9F /* Coder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
