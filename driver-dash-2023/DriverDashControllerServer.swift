@@ -9,7 +9,7 @@ import Foundation
 import SwiftSocket
 
 // set address to the IP address of *the phone*
-let ADDRESS = "10.48.155.202"
+let ADDRESS = "172.20.10.1"
 let PORT = 8080
 
 extension DriverDashController {
