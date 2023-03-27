@@ -6,6 +6,6 @@ target 'driver-dash-2023' do
   use_frameworks!
 
   # Pods for driver-dash-2023
-  pod 'Swifter', '~> 1.5.0'
+  pod 'SwiftSocket'
 
 end
