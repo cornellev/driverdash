@@ -15,6 +15,13 @@ let PORT = 8080
 extension DriverDashController {
     
     class ServerThread: Thread {
+        let controller: DriverDashController!
+        
+        init(controller: DriverDashController) {
+            self.controller = controller
+            super.init()
+        }
+        
         override func main() {
             let server = TCPServer(address: ADDRESS, port: Int32(PORT))
             
@@ -55,6 +62,13 @@ extension DriverDashController {
                         let encoder = JSONEncoder()
                         encoder.outputFormatting = .prettyPrinted
                         
+                        // since changing the model updates the UI, we have to make updates on the main thread.
+                        // this will update as soon as the main thread is able.
+                        DispatchQueue.main.async {
+                            // todo: not always a defined value
+                            self.controller.model.power = json.voltage!
+                        }
+                        
                         print(json)
                         print(try! String(data: encoder.encode(json), encoding: .utf8)!)
                         
@@ -67,7 +81,7 @@ extension DriverDashController {
     }
        
     func initServer() {
-        let serverThread = ServerThread()
+        let serverThread = ServerThread(controller: self)
         serverThread.start()
     }
     
