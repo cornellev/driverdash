@@ -41,10 +41,10 @@ struct BackPacket: Codable {
     var rpm: Int?
     
     // average value
-    var bms: Double?
+    var voltage: Double?
     
-    // true == engaged
-    var safety: Bool?
+    // 1 == engaged
+    var safety: Int?
     
     var lord: Lord?
     

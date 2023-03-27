@@ -30,22 +30,6 @@ class DriverDashModel: NSObject, ObservableObject {
     override init() {
         super.init()
         
-//        for filename in ["front-daq.json", "back-daq.json"] {
-//            let url = getURLFor(name: filename)
-//            print(url)
-//            print(url.absoluteString)
-//            if !FileManager.default.fileExists(atPath: url.absoluteString) {
-//                FileManager.default.createFile(atPath: url.absoluteString, contents: nil)
-//            }
-//        }
-//        
-//        frontFile = try! FileHandle(forWritingTo: getURLFor(name: "front-daq.json"))
-//        backFile = try! FileHandle(forWritingTo: getURLFor(name: "back-daq.json"))
-//        func getURLFor(name: String) -> URL {
-//            let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-//            return paths.first!.appendingPathComponent(name, conformingTo: .text)
-//        }
-        
         // set up phone GPS tracking
         locationManager = CLLocationManager()
         // not sure what I want the accuracy level to be
@@ -63,28 +47,41 @@ class DriverDashModel: NSObject, ObservableObject {
             while true {
                 if let client = server.accept() {
                     print("Newclient from: \(client.address):\(client.port)")
-                    // expect to first get four bytes with the length of the next packet
-                    // see https://stackoverflow.com/a/32770113
                     
-                    let data = Data(bytes: client.read(4)!, count: 4)
-                    let length = UInt32(bigEndian: data.withUnsafeBytes {
-                        (pointer: UnsafeRawBufferPointer) -> UInt32 in return pointer.load(as: UInt32.self)
-                    })
-                    
-                    if let content = String(bytes: client.read(Int(length))!, encoding: .utf8) {
-                        print(content)
+                    while true {
+                        // expect to first get four bytes with the length of the next packet
+                        let read = client.read(4)!
+                        let data = Data(bytes: read, count: 4)
+                        let length = UInt32(littleEndian: data.withUnsafeBytes {
+                            // see https://stackoverflow.com/a/32770113
+                            (pointer: UnsafeRawBufferPointer) -> UInt32 in return pointer.load(as: UInt32.self)
+                        })
+                        
+                        // all data sent to the server will be valid json
+                        if let content = String(bytes: client.read(Int(length))!, encoding: .utf8) {
+                            do {
+                                let json = try JSONDecoder().decode(BackPacket.self, from: content.data(using: .utf8)!)
+                                let encoder = JSONEncoder()
+                                encoder.outputFormatting = .prettyPrinted
+                                print(try encoder.encode(json))
+                                
+                            } catch let error {
+                                print("Error reading JSON: \(error.localizedDescription)")
+                            }
+                            
+                            print(content)
+                        }
                     }
+                    // var _ = client.send(string: "g")
+                    // client.close()
                     
-                    var _ = client.send(string: "g")
-                    client.close()
                 } else {
                     print("accept error")
                 }
             }
             
           case .failure(let error):
-            print("error")
-            // print(error)
+            print(error.localizedDescription)
         }
         
         /*
