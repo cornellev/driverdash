@@ -73,47 +73,40 @@ class DDServer: NSObject {
                 bytes = client.read(Int(length))!
                 // all data sent to the server will be valid json
                 if let content = String(bytes: bytes, encoding: .utf8) {
-                    do {
-                        // todo: how to decide whether it's a BackPacket or FrontPacket?
-                        var json = try JSONDecoder().decode(Coder.BackPacket.self, from: content.data(using: .utf8)!)
-                        
-                        // phone's location is better than nothing
-                        if let location = self.controller.model.location {
-                            if json.rtk == nil {
-                                json.rtk = Coder.BackPacket.RTK(
-                                    latitude: location.coordinate.latitude,
-                                    longitude: location.coordinate.longitude)
-                            }
+                    // todo: how to decide whether it's a BackPacket or FrontPacket?
+                    var json = Coder().decode(from: content, ofType: Coder.BackPacket.self)
+                    
+                    // phone's location is better than nothing
+                    if let location = self.controller.model.location {
+                        if json.rtk == nil {
+                            json.rtk = Coder.BackPacket.RTK(
+                                latitude: location.coordinate.latitude,
+                                longitude: location.coordinate.longitude)
                         }
-                        
-                        let encoder = JSONEncoder()
-                        encoder.outputFormatting = .prettyPrinted
-                        
-                        // since changing the model updates the UI, we have to make updates on the main thread.
-                        // this will update as soon as the main thread is able.
-                        DispatchQueue.main.async {
-                            if let power = json.voltage {
-                                self.controller.model.power = power
-                            }
-                            
-                            if let rpm = json.rpm {
-                                let diameter = 0.605 // meters
-                                let speed = Double(rpm) * diameter * Double.pi * 60 / 1000 // km/h
-                                self.controller.model.speed = speed
-                            }
-                        }
-                        
-                        // also defer file-writing to be async
-                        DispatchQueue.main.async {
-                            self.serializer.serialize(data: json)
-                        }
-                        
-                        print(json)
-                        print(try! String(data: encoder.encode(json), encoding: .utf8)!)
-                        
-                    } catch let error {
-                        print("Error reading JSON: \(error.localizedDescription)")
                     }
+                    
+                    // since changing the model updates the UI, we have to make updates on the main thread.
+                    // this will update as soon as the main thread is able.
+                    DispatchQueue.main.async {
+                        if let power = json.voltage {
+                            self.controller.model.power = power
+                        }
+                        
+                        if let rpm = json.rpm {
+                            let diameter = 0.605 // meters
+                            let speed = Double(rpm) * diameter * Double.pi * 60 / 1000 // km/h
+                            self.controller.model.speed = speed
+                        }
+                    }
+                    
+                    // also defer file-writing to be async
+                    DispatchQueue.main.async {
+                        self.serializer.serialize(data: json)
+                    }
+                    
+                    // show what the data looks like
+                    print(json)
+                    print(Coder().encode(from: json))
                 }
             }
         }
