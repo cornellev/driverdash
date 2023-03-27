@@ -55,9 +55,27 @@ struct BackPacket: Codable {
 
 // assumes all payloads are valid. Will crash if not!
 func decodeFrontDAQ(from payload: String) -> FrontPacket {
-    try! JSONDecoder().decode(FrontPacket.self, from: payload.data(using: .utf8)!)
+    return decodeFrontDAQ(from: payload.data(using: .utf8)!)
+}
+
+func decodeFrontDAQ(from payload: Data) -> FrontPacket {
+    do {
+        return try JSONDecoder().decode(FrontPacket.self, from: payload)
+    } catch let error {
+        print("decodeFrontDAQ error: \(error.localizedDescription)")
+        return FrontPacket()
+    }
 }
 
 func decodeBackDAQ(from payload: String) -> BackPacket {
-    try! JSONDecoder().decode(BackPacket.self, from: payload.data(using: .utf8)!)
+    return decodeBackDAQ(from: payload.data(using: .utf8)!)
+}
+
+func decodeBackDAQ(from payload: Data) -> BackPacket {
+    do {
+        return try JSONDecoder().decode(BackPacket.self, from: payload)
+    } catch let error {
+        print("decodeBackDAQ error: \(error.localizedDescription)")
+        return BackPacket()
+    }
 }
