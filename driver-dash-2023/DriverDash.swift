@@ -19,11 +19,13 @@ struct DriverDash: App {
 struct ContentView: View {
     @ObservedObject private var model = DriverDashModel()
 
-    private var serverController: DDServer?
+    private var frontServerController: DDServer?
+    private var backServerController: DDServer?
     private var locationController: DDLocation?
     
     init() {
-        self.serverController = DDServer(with: model)
+        self.frontServerController = DDServer(address: "10.48.155.202", port: 8081, for: .front, with: model)
+        self.backServerController = DDServer(address: "10.48.155.202", port: 8080, for: .back, with: model)
         // self.locationController = DDLocation(with: model)
     }
     

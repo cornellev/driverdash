@@ -9,13 +9,21 @@ import Foundation
 import SwiftSocket
 
 class DDServer: NSObject {
-    // set address to the IP address of *the phone*
-    let ADDRESS = "172.20.10.1"
-    let PORT = 8080
+    let address: String
+    let port: Int32
     
     let model: DriverDashModel
+    let side: Side
     
-    init(with model: DriverDashModel) {
+    enum Side {
+        case front
+        case back
+    }
+    
+    init(address: String, port: Int, for side: Side, with model: DriverDashModel) {
+        self.address = address
+        self.port = Int32(port)
+        self.side = side
         self.model = model
         
         super.init()
@@ -37,15 +45,23 @@ class DDServer: NSObject {
         }
         
         override func main() {
-            let ADDRESS = self.controller.ADDRESS
-            let PORT = Int32(self.controller.PORT)
-            let server = TCPServer(address: ADDRESS, port: PORT)
+            let server = TCPServer(
+                address: self.controller.address,
+                port: self.controller.port)
+            
+            defer {
+                let side = self.controller.side == .front ? "front" : "back"
+                print("Closing down the \(side) server.")
+                server.close()
+            }
             
             switch server.listen() {
               case .success:
-                print("Server listening!")
+                let side = self.controller.side == .front ? "Front" : "Back"
+                print("\(side) server listening at \(self.controller.address):\(self.controller.port)!")
                 
                 while true {
+                    // accept() stalls until something connects
                     if let client = server.accept() {
                         handle(client)
                     } else {
@@ -59,54 +75,60 @@ class DDServer: NSObject {
             }
         }
         
-        func handle(_ client: TCPClient) {
+        private func handle(_ client: TCPClient) {
             print("New client from: \(client.address):\(client.port)")
             
             // receive length of packet in 4 bytes
-            while var bytes = client.read(4) {
-                let data = Data(bytes: bytes, count: 4)
+            // read() waits until we have all 4 bytes
+            while let length_b = client.read(4) {
+                let data = Data(bytes: length_b, count: 4)
                 let length = UInt32(littleEndian: data.withUnsafeBytes {
                     // see https://stackoverflow.com/a/32770113
                     pointer in return pointer.load(as: UInt32.self)
                 })
                 
-                bytes = client.read(Int(length))!
-                // all data sent to the server will be valid json
-                if let content = String(bytes: bytes, encoding: .utf8) {
-                    // todo: how to decide whether it's a BackPacket or FrontPacket?
-                    var json = Coder().decode(from: content, ofType: Coder.BackPacket.self)
-                    
-                    // phone's location is better than nothing
-                    if let location = self.controller.model.location {
-                        if json.rtk == nil {
-                            json.rtk = Coder.BackPacket.RTK(
-                                latitude: location.coordinate.latitude,
-                                longitude: location.coordinate.longitude)
-                        }
-                    }
-                    
-                    // since changing the model updates the UI, we have to make updates on the main thread.
-                    // this will update as soon as the main thread is able.
-                    DispatchQueue.main.async {
-                        if let power = json.voltage {
-                            self.controller.model.power = power
+                // wait until we have the next length packets
+                if let content_b = client.read(Int(length)) {
+                    switch self.controller.side {
+                      case .front:
+                        let json = Coder().decode(
+                            from: Data(content_b),
+                            ofType: Coder.FrontPacket.self)
+                        // preview parsed data
+                        print(Coder().encode(from: json))
+                        
+                        // defer file-writing to be async
+                        DispatchQueue.global().async {
+                            self.serializer.serialize(data: json)
                         }
                         
-                        if let rpm = json.rpm {
-                            let diameter = 0.605 // meters
-                            let speed = Double(rpm) * diameter * Double.pi * 60 / 1000 // km/h
-                            self.controller.model.speed = speed
+                        
+                      case .back:
+                        let json = Coder().decode(
+                            from: Data(content_b),
+                            ofType: Coder.BackPacket.self)
+                        // preview parsed data
+                        print(Coder().encode(from: json))
+                        
+                        // since changing the model updates the UI, we have to make updates on the main thread.
+                        // this will update as soon as the main thread is able.
+                        DispatchQueue.main.async {
+                            if let power = json.voltage {
+                                self.controller.model.power = power
+                            }
+                            
+                            if let rpm = json.rpm {
+                                let diameter = 0.605 // meters
+                                let speed = Double(rpm) * diameter * Double.pi * 60 / 1000 // km/h
+                                self.controller.model.speed = speed
+                            }
+                        }
+                        
+                        // defer file-writing to be async
+                        DispatchQueue.global().async {
+                            self.serializer.serialize(data: json)
                         }
                     }
-                    
-                    // also defer file-writing to be async
-                    DispatchQueue.main.async {
-                        self.serializer.serialize(data: json)
-                    }
-                    
-                    // show what the data looks like
-                    print(json)
-                    print(Coder().encode(from: json))
                 }
             }
         }
