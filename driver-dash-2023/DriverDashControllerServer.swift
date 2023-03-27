@@ -21,6 +21,7 @@ extension DriverDashController {
             switch server.listen() {
               case .success:
                 print("Server listening!")
+                
                 while true {
                     if let client = server.accept() {
                         handle(client)
@@ -55,12 +56,13 @@ extension DriverDashController {
                         encoder.outputFormatting = .prettyPrinted
                         
                         print(json)
+                        print(try! String(data: encoder.encode(json), encoding: .utf8)!)
                         
                     } catch let error {
                         print("Error reading JSON: \(error.localizedDescription)")
                     }
                 }
-            } 
+            }
         }
     }
        
