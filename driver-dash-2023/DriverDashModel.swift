@@ -13,6 +13,8 @@ import CoreLocation
 // each one has the timestamp: { data } format I outlined for Drew
 // note that the location comes with a timestamp!
 
+// see this for clearing it https://developer.apple.com/documentation/foundation/userdefaults/1415919-dictionaryrepresentation
+
 class DriverDashModel: NSObject, ObservableObject {
     @Published var speed = 0.0
     @Published var power = 0.0
@@ -22,8 +24,23 @@ class DriverDashModel: NSObject, ObservableObject {
     
     private var location: CLLocation?
     
+    private var frontFile: FileHandle!
+    private var backFile: FileHandle!
+    
     override init() {
         super.init()
+        
+//        for filename in ["front-daq.json", "back-daq.json"] {
+//            let url = getURLFor(name: filename)
+//            print(url)
+//            print(url.absoluteString)
+//            if !FileManager.default.fileExists(atPath: url.absoluteString) {
+//                FileManager.default.createFile(atPath: url.absoluteString, contents: nil)
+//            }
+//        }
+//        
+//        frontFile = try! FileHandle(forWritingTo: getURLFor(name: "front-daq.json"))
+//        backFile = try! FileHandle(forWritingTo: getURLFor(name: "back-daq.json"))
         
         // set up phone GPS tracking
         locationManager = CLLocationManager()
@@ -42,7 +59,6 @@ class DriverDashModel: NSObject, ObservableObject {
             self.locationManager.requestLocation()
             print(self.location ?? "no location yet")
             return .ok(.text("pong"))
-            
         }
         
         //handles back daq
@@ -59,18 +75,19 @@ class DriverDashModel: NSObject, ObservableObject {
             // save to file with timestamp. requires location
             if let location = self.location {
                 // if no RTK, fill with phone location
+                // todo don't do this. have another format for the saved stuff
                 if json.rtk == nil {
                     json.rtk = BackPacket.RTK(
                         latitude: location.coordinate.latitude,
                         longitude: location.coordinate.longitude)
                 }
                 
-                let encoded = try! JSONEncoder().encode(json)
                 let timestamp = getTimestampString(from: location.timestamp)
-                UserDefaults.standard.set(encoded, forKey: timestamp)
-                
-                print(try! JSONDecoder().decode(BackPacket.self,
-                                                from: (UserDefaults.standard.value(forKey: timestamp) as? Data)!))
+                let encoded = try! JSONEncoder().encode(data)
+                let stringified = String(data: encoded, encoding: .utf8)!
+                try! self.backFile.write(contentsOf: "\(timestamp) \(stringified)\n".data(using: .utf8)!)
+                // todo: save
+                //saveToFile(timestamp: "\(timestamp).json", data: json)
             }
         })
         
@@ -85,7 +102,8 @@ class DriverDashModel: NSObject, ObservableObject {
         
         func getTimestampString(from date: Date = Date()) -> String {
             let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy-MM-dd:HH:mm:ss.SSSSS"
+            // can't use colons since it's a filename (for now)
+            dateFormatter.dateFormat = "yyyy-MM-dd-HH.mm.ss.SSSSS"
             return dateFormatter.string(from: date)
         }
         
