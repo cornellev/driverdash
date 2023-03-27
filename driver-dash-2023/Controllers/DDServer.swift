@@ -1,5 +1,5 @@
 //
-//  DriverDashControllerServer.swift
+//  DDServer.swift
 //  driver-dash-2023
 //
 //  Created by Jason Klein on 3/27/23.
@@ -8,25 +8,38 @@
 import Foundation
 import SwiftSocket
 
-// set address to the IP address of *the phone*
-let ADDRESS = "172.20.10.1"
-let PORT = 8080
-
-extension DriverDashController {
+class DDServer: NSObject {
+    // set address to the IP address of *the phone*
+    let ADDRESS = "10.48.155.202"
+    let PORT = 8080
     
-    class ServerThread: Thread {
-        let controller: DriverDashController!
+    let model: DriverDashModel
+    
+    init(with model: DriverDashModel) {
+        self.model = model
+        
+        super.init()
+        
+        let serverThread = ServerThread(controller: self)
+        serverThread.start()
+    }
+    
+    private class ServerThread: Thread {
+        let controller: DDServer!
         let serializer: Serializer!
         
-        init(controller: DriverDashController) {
+        init(controller: DDServer) {
+            self.serializer = Serializer()
             // reference needed so we can update state
             self.controller = controller
-            self.serializer = Serializer()
+            
             super.init()
         }
         
         override func main() {
-            let server = TCPServer(address: ADDRESS, port: Int32(PORT))
+            let ADDRESS = self.controller.ADDRESS
+            let PORT = Int32(self.controller.PORT)
+            let server = TCPServer(address: ADDRESS, port: PORT)
             
             switch server.listen() {
               case .success:
@@ -105,10 +118,4 @@ extension DriverDashController {
             }
         }
     }
-       
-    func initServer() {
-        let serverThread = ServerThread(controller: self)
-        serverThread.start()
-    }
-    
 }
