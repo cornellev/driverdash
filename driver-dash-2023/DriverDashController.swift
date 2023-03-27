@@ -21,6 +21,6 @@ class DriverDashController: NSObject {
         
         super.init()
         self.initServer()
-        // self.initLocation()
+        self.initLocation()
     }
 }
