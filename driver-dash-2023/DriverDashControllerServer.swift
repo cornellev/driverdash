@@ -61,6 +61,7 @@ extension DriverDashController {
                 // all data sent to the server will be valid json
                 if let content = String(bytes: bytes, encoding: .utf8) {
                     do {
+                        // todo: how to decide whether it's a BackPacket or FrontPacket?
                         let json = try JSONDecoder().decode(BackPacket.self, from: content.data(using: .utf8)!)
                         let encoder = JSONEncoder()
                         encoder.outputFormatting = .prettyPrinted
@@ -79,9 +80,8 @@ extension DriverDashController {
                             }
                         }
                         
-                        // also defer file-writing to be async, but use a serial
-                        // queue so we don't try writing at the same time
-                        DispatchQueue.main.sync {
+                        // also defer file-writing to be async
+                        DispatchQueue.main.async {
                             self.serializer.serialize(data: json)
                         }
                         
