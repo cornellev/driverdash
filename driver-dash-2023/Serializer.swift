@@ -19,21 +19,16 @@ class Serializer: NSObject {
     override init() {
         // create empty files if they don't exist
         if !fileManager.fileExists(atPath: frontFilePath.path) {
-            fileManager.createFile(atPath: frontFilePath.path, contents: nil, attributes: nil)
+            fileManager.createFile(atPath: frontFilePath.path, contents: "{".data(using: .utf8))
         }
         
         if !fileManager.fileExists(atPath: backFilePath.path) {
-            fileManager.createFile(atPath: backFilePath.path, contents: nil, attributes: nil)
+            fileManager.createFile(atPath: backFilePath.path, contents: "{".data(using: .utf8))
         }
         
         // open files for writing
-        frontFile = FileHandle(forWritingAtPath: frontFilePath.path) //FileHandle(forWritingTo: frontFilePath)
-        backFile = FileHandle(forWritingAtPath: backFilePath.path) // try! FileHandle(forWritingTo: backFilePath)
-        
-//        try! backFile.write(contentsOf: "2023-03-27T02:37:00Z {\"rpm\":300,\"voltage\":24.100000000000001,\"safety\":1}\n".data(using: .utf8)!)
-//        try! backFile.seekToEnd()
-//        try! backFile.write(contentsOf: "2023-03-27T02:37:00Z {\"rpm\":300,\"voltage\":24.100000000000001,\"safety\":1}\n".data(using: .utf8)!)
-        
+        frontFile = FileHandle(forWritingAtPath: frontFilePath.path)
+        backFile = FileHandle(forWritingAtPath: backFilePath.path)
         
         defer {
             // close files when done with them
@@ -49,7 +44,7 @@ class Serializer: NSObject {
         let timestamp = getTimestamp(from: localDate())
         
         do {
-            try "\(timestamp) \(stringified)\n".appendToURL(fileURL: backFilePath)
+            try "\"\(timestamp)\": \(stringified),\n".appendToURL(fileURL: backFilePath)
         } catch let error {
             print("Error serializing: \(error.localizedDescription)")
         }
@@ -60,7 +55,7 @@ class Serializer: NSObject {
         let timestamp = getTimestamp(from: localDate())
         
         do {
-            try "\(timestamp) \(stringified)\n".appendToURL(fileURL: backFilePath)
+            try "\"\(timestamp)\": \(stringified),\n".appendToURL(fileURL: backFilePath)
         } catch let error {
             print("Error serializing: \(error.localizedDescription)")
         }
