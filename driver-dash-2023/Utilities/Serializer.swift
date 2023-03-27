@@ -39,8 +39,8 @@ class Serializer: NSObject {
         super.init()
     }
     
-    func serialize(data: FrontPacket) {
-        let stringified = encodeFrontDAQ(from: data)
+    func serialize(data: Coder.FrontPacket) {
+        let stringified = Coder().encodeFrontDAQ(from: data)
         let timestamp = getTimestamp(from: localDate())
         
         do {
@@ -50,8 +50,8 @@ class Serializer: NSObject {
         }
     }
 
-    func serialize(data: BackPacket) {
-        let stringified = encodeBackDAQ(from: data)
+    func serialize(data: Coder.BackPacket) {
+        let stringified = Coder().encodeBackDAQ(from: data)
         let timestamp = getTimestamp(from: localDate())
         
         do {

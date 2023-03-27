@@ -10,7 +10,7 @@ import SwiftSocket
 
 class DDServer: NSObject {
     // set address to the IP address of *the phone*
-    let ADDRESS = "10.48.155.202"
+    let ADDRESS = "172.20.10.1"
     let PORT = 8080
     
     let model: DriverDashModel
@@ -75,12 +75,12 @@ class DDServer: NSObject {
                 if let content = String(bytes: bytes, encoding: .utf8) {
                     do {
                         // todo: how to decide whether it's a BackPacket or FrontPacket?
-                        var json = try JSONDecoder().decode(BackPacket.self, from: content.data(using: .utf8)!)
+                        var json = try JSONDecoder().decode(Coder.BackPacket.self, from: content.data(using: .utf8)!)
                         
                         // phone's location is better than nothing
                         if let location = self.controller.model.location {
                             if json.rtk == nil {
-                                json.rtk = BackPacket.RTK(
+                                json.rtk = Coder.BackPacket.RTK(
                                     latitude: location.coordinate.latitude,
                                     longitude: location.coordinate.longitude)
                             }
