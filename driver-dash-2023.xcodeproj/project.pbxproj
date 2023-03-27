@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		965EE2B129D15086002BDA3D /* DriverDashController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965EE2B029D15086002BDA3D /* DriverDashController.swift */; };
+		965EE2B329D15807002BDA3D /* DriverDashControllerServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965EE2B229D15807002BDA3D /* DriverDashControllerServer.swift */; };
+		965EE2B529D1591D002BDA3D /* DriverDashControllerLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965EE2B429D1591D002BDA3D /* DriverDashControllerLocation.swift */; };
 		96DDBA6529CE396000165A9F /* DriverDash.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96DDBA6429CE396000165A9F /* DriverDash.swift */; };
 		96DDBA6729CE396000165A9F /* DataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96DDBA6629CE396000165A9F /* DataView.swift */; };
 		96DDBA6929CE396100165A9F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 96DDBA6829CE396100165A9F /* Assets.xcassets */; };
@@ -20,6 +22,8 @@
 /* Begin PBXFileReference section */
 		4C36EEBAD79918737A62BD4E /* Pods_driver_dash_2023.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_driver_dash_2023.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		965EE2B029D15086002BDA3D /* DriverDashController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriverDashController.swift; sourceTree = "<group>"; };
+		965EE2B229D15807002BDA3D /* DriverDashControllerServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriverDashControllerServer.swift; sourceTree = "<group>"; };
+		965EE2B429D1591D002BDA3D /* DriverDashControllerLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriverDashControllerLocation.swift; sourceTree = "<group>"; };
 		96DDBA6129CE396000165A9F /* DriverDash.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DriverDash.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		96DDBA6429CE396000165A9F /* DriverDash.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriverDash.swift; sourceTree = "<group>"; };
 		96DDBA6629CE396000165A9F /* DataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataView.swift; sourceTree = "<group>"; };
@@ -77,6 +81,8 @@
 				96DDBA6429CE396000165A9F /* DriverDash.swift */,
 				96DDBA7329CED51A00165A9F /* DriverDashModel.swift */,
 				965EE2B029D15086002BDA3D /* DriverDashController.swift */,
+				965EE2B229D15807002BDA3D /* DriverDashControllerServer.swift */,
+				965EE2B429D1591D002BDA3D /* DriverDashControllerLocation.swift */,
 				96DDBA6629CE396000165A9F /* DataView.swift */,
 				96DDBA7529CF503900165A9F /* Packets.swift */,
 				96DDBA6829CE396100165A9F /* Assets.xcassets */,
@@ -218,8 +224,10 @@
 			files = (
 				96DDBA6729CE396000165A9F /* DataView.swift in Sources */,
 				96DDBA7429CED51A00165A9F /* DriverDashModel.swift in Sources */,
+				965EE2B529D1591D002BDA3D /* DriverDashControllerLocation.swift in Sources */,
 				965EE2B129D15086002BDA3D /* DriverDashController.swift in Sources */,
 				96DDBA6529CE396000165A9F /* DriverDash.swift in Sources */,
+				965EE2B329D15807002BDA3D /* DriverDashControllerServer.swift in Sources */,
 				96DDBA7629CF503900165A9F /* Packets.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
