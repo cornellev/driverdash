@@ -12,5 +12,9 @@ class DriverDashModel: NSObject, ObservableObject {
     @Published var speed = 0.0
     @Published var power = 0.0
     
+    @Published var frontSocketConnected = false
+    @Published var backSocketConnected = false
+    @Published var lordSocketConnected = false
+    
     var location: CLLocation?
 }

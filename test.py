@@ -27,7 +27,7 @@ def main():
         print(message)
         client_socket.sendall(len(message).to_bytes(4, "little"))
         client_socket.sendall(message.encode())
-        time.sleep(.25)
+        time.sleep(.5)
     client_socket.close()
 
     print("Sending payload to back server")
@@ -43,7 +43,7 @@ def main():
         print(message)
         client_socket.sendall(len(message).to_bytes(4, "little"))
         client_socket.sendall(message.encode())
-        time.sleep(.25)
+        time.sleep(.5)
     client_socket.close()
 
 
