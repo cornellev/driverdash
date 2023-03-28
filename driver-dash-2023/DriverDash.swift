@@ -33,10 +33,19 @@ struct ContentView: View {
     }
     
     var body: some View {
-        ZStack {
-            // connection indicators
+        HStack {
             VStack {
+                // spacers to center in remaining space
                 Spacer()
+                
+                VStack(alignment: .leading, spacing: 50) {
+                    DataView(title: "Speed", value: model.speed, units: "km/h")
+                    DataView(title: "Power", value: model.power, units: "kW/h")
+                }
+                
+                Spacer()
+                
+                // connection indicators
                 HStack(spacing: 50) {
                     Text("Front")
                         .foregroundColor(model.frontSocketConnected ? Color.green : Color.red)
@@ -49,11 +58,10 @@ struct ContentView: View {
                         .bold()
                 }.padding([.top, .bottom], 10)
             }
+                .frame(maxWidth: .infinity)
             
-            HStack {
-                DataView(title: "Speed", value: model.speed, units: "km/h")
-                DataView(title: "Power", value: model.power, units: "kW/h")
-            }.padding()
+            MapView()
+                .frame(maxWidth: .infinity)
         }
     }
 }

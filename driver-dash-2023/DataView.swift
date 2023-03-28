@@ -7,25 +7,28 @@
 
 import SwiftUI
 
-// see https://engineering.deptagency.com/state-of-swift-websockets
-
 struct DataView: View {
     var title: String
     var value: Double = 0
     var units: String
     
     var body: some View {
-        VStack {
+        VStack(alignment: .leading, spacing: 10) {
             // title styling
             Text(title)
                 .font(.title).bold()
-                .padding([.leading, .trailing], 100)
-            Text(units)
             
-            // handle data display
-            Text(String(format: "%.2f", value))
-                .font(.system(size: 48, design: .monospaced))
-                .padding(10)
+            HStack(alignment: .bottom) {
+                // handle data display
+                Text(String(format: "%.2f", value))
+                    .font(.system(size: 48, design: .monospaced))
+                    .padding([.leading, .trailing], 5)
+                
+                Text(units)
+                    .padding([.bottom], 10)
+            }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding([.leading], 65)
     }
 }
