@@ -49,6 +49,18 @@ class Coder {
         var rtk: RTK?
     }
     
+    struct LordPacket: Codable {
+        var gpsCorrelTimestampTow: Double?
+        var gpsCorrelTimestampWeekNum: Double?
+        var gpsCorrelTimestampFlags: Double?
+        var scaledAccelX: Double?
+        var scaledAccelY: Double?
+        var scaledAccelZ: Double?
+        var roll: Double?
+        var pitch: Double?
+        var yaw: Double?
+    }
+    
     // assumes all payloads are valid. Will crash if not!
     func decode<T: Codable>(from payload: Data, ofType type: T.Type) -> T {
         let decoder = JSONDecoder()

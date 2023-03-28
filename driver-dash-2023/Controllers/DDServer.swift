@@ -13,17 +13,18 @@ class DDServer: NSObject {
     let port: Int32
     
     let model: DriverDashModel
-    let side: Side
+    let socket: Socket
     
-    enum Side {
-        case front
-        case back
+    enum Socket: String {
+        case front = "front"
+        case back = "back"
+        case lord = "lord"
     }
     
-    init(address: String, port: Int, for side: Side, with model: DriverDashModel) {
+    init(address: String, port: Int, for socket: Socket, with model: DriverDashModel) {
         self.address = address
         self.port = Int32(port)
-        self.side = side
+        self.socket = socket
         self.model = model
         
         super.init()
@@ -50,20 +51,27 @@ class DDServer: NSObject {
                 port: self.controller.port)
             
             defer {
-                let side = self.controller.side == .front ? "front" : "back"
-                print("Closing down the \(side) server.")
+                print("Closing down the \(self.controller.socket.rawValue) server.")
                 server.close()
             }
             
             switch server.listen() {
               case .success:
-                let side = self.controller.side == .front ? "Front" : "Back"
+                let side = self.controller.socket.rawValue.capitalized
                 print("\(side) server listening at \(self.controller.address):\(self.controller.port)!")
                 
                 while true {
                     // accept() stalls until something connects
                     if let client = server.accept() {
+                        // we connected!
+                        print("\(self.controller.socket.rawValue.capitalized) has a new connection!")
+                        updateStatus(connected: true)
+                        
                         handle(client)
+                        
+                        // if we're here then we disconnected
+                        print("A client disconnected from the \(self.controller.socket.rawValue) server")
+                        updateStatus(connected: false)
                     } else {
                         print("accept error")
                     }
@@ -72,6 +80,21 @@ class DDServer: NSObject {
               case .failure(let error):
                 print(error.localizedDescription)
                 print("You probably have the wrong phone IP address")
+            }
+        }
+        
+        private func updateStatus(connected: Bool) {
+            let model = self.controller.model
+            
+            DispatchQueue.main.async {
+                switch (self.controller.socket) {
+                    case .front:
+                        model.frontSocketConnected = connected
+                    case .back:
+                        model.backSocketConnected = connected
+                    case .lord:
+                        model.lordSocketConnected = connected
+                }
             }
         }
         
@@ -89,45 +112,50 @@ class DDServer: NSObject {
                 
                 // wait until we have the next length packets
                 if let content_b = client.read(Int(length)) {
-                    switch self.controller.side {
-                      case .front:
-                        let json = Coder().decode(
-                            from: Data(content_b),
-                            ofType: Coder.FrontPacket.self)
-                        // preview parsed data
-                        print(Coder().encode(from: json))
+                    switch self.controller.socket {
+                        case .front:
+                            let json = Coder().decode(
+                                from: Data(content_b),
+                                ofType: Coder.FrontPacket.self)
+                            // preview parsed data
+                            print(Coder().encode(from: json))
+                            
+                            // defer file-writing to be async
+                            DispatchQueue.global().async {
+                                self.serializer.serialize(data: json)
+                            }
                         
-                        // defer file-writing to be async
-                        DispatchQueue.global().async {
-                            self.serializer.serialize(data: json)
-                        }
-                        
-                        
-                      case .back:
-                        let json = Coder().decode(
-                            from: Data(content_b),
-                            ofType: Coder.BackPacket.self)
-                        // preview parsed data
-                        print(Coder().encode(from: json))
-                        
-                        // since changing the model updates the UI, we have to make updates on the main thread.
-                        // this will update as soon as the main thread is able.
-                        DispatchQueue.main.async {
-                            if let power = json.voltage {
-                                self.controller.model.power = power
+                        case .back:
+                            let json = Coder().decode(
+                                from: Data(content_b),
+                                ofType: Coder.BackPacket.self)
+                            // preview parsed data
+                            print(Coder().encode(from: json))
+                            
+                            // since changing the model updates the UI, we have to make updates on the main thread.
+                            // this will update as soon as the main thread is able.
+                            DispatchQueue.main.async {
+                                if let power = json.voltage {
+                                    self.controller.model.power = power
+                                }
+                                
+                                if let rpm = json.rpm {
+                                    let diameter = 0.605 // meters
+                                    let speed = Double(rpm) * diameter * Double.pi * 60 / 1000 // km/h
+                                    self.controller.model.speed = speed
+                                }
                             }
                             
-                            if let rpm = json.rpm {
-                                let diameter = 0.605 // meters
-                                let speed = Double(rpm) * diameter * Double.pi * 60 / 1000 // km/h
-                                self.controller.model.speed = speed
+                            // defer file-writing to be async
+                            DispatchQueue.global().async {
+                                self.serializer.serialize(data: json)
                             }
-                        }
                         
-                        // defer file-writing to be async
-                        DispatchQueue.global().async {
-                            self.serializer.serialize(data: json)
-                        }
+                        case .lord:
+                            print(String(bytes: Data(content_b), encoding: .utf8)!)
+//                        let json = Coder().decode(
+//                            from: content_b,
+//                            ofType: Coder.LordPacket.self)
                     }
                 }
             }
