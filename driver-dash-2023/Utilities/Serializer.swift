@@ -10,8 +10,8 @@ import Foundation
 class Serializer: NSObject {
     let fileManager = FileManager.default
     
-    let frontFilePath = pathInDocuments("front-daq.json")
-    let backFilePath = pathInDocuments("back-daq.json")
+    let frontFilePath = pathInDocuments(for: "front-daq.json")
+    let backFilePath = pathInDocuments(for: "back-daq.json")
     
     let frontFile: FileHandle!
     let backFile: FileHandle!
@@ -44,7 +44,7 @@ class Serializer: NSObject {
         let timestamp = getTimestamp(from: localDate())
         
         do {
-            try "\"\(timestamp)\": \(stringified),\n".appendToURL(fileURL: backFilePath)
+            try "\"\(timestamp)\": \(stringified),\n".appendToURL(fileURL: frontFilePath)
         } catch let error {
             print("Error serializing: \(error.localizedDescription)")
         }
@@ -61,7 +61,7 @@ class Serializer: NSObject {
         }
     }
     
-    static func pathInDocuments(_ path: String) -> URL {
+    static func pathInDocuments(for path: String) -> URL {
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         return paths.first!.appendingPathComponent(path, conformingTo: .text)
     }

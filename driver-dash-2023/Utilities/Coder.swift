@@ -5,7 +5,7 @@
 //  Created by Jason Klein on 3/25/23.
 //
 
-import SwiftUI
+import Foundation
 
 class Coder {
     struct FrontPacket: Codable {
