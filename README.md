@@ -46,7 +46,7 @@ Due to constraints imposed by the ESP32s, we have switched from HTTP/WebSockets 
 
 ## Structure
 
-`DriverDash` and `DataView` control the appearance of the iPhone app, laying out the values and numbers and indicators and displaying the data. To handle state and effects, the project uses the Model-View-Controller (MVC) architecture, with `DriverDash` as the view.
+`DriverDash` (the root view), `DataView`, and `MapView` control the appearance of the iPhone app, laying out the values and numbers and indicators and displaying the data. To handle state and effects, the project uses the Model-View-Controller (MVC) architecture, with `DriverDash` as the view.
 
 `DriverDashModel` is the model, and is responsible for storing the state for the app, such as the current speed and power values and the connection statuses. Every file within the `Controllers/` directory is a controller responsible for managing distinct aspects of the app. `DDLocation` gets location data from the phone to use as a fallback, and `DDServer` runs the TCP servers on separate threads and updates the model when they receive information. Overall, the structure looks like this:
 
