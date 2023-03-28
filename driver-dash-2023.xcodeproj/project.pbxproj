@@ -11,7 +11,6 @@
 		965EE2B729D164BA002BDA3D /* Serializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965EE2B629D164BA002BDA3D /* Serializer.swift */; };
 		965EE2BA29D22FD1002BDA3D /* DDLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965EE2B929D22FD1002BDA3D /* DDLocation.swift */; };
 		965EE2BD29D29CC3002BDA3D /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965EE2BC29D29CC3002BDA3D /* MapView.swift */; };
-		965EE2BF29D29D45002BDA3D /* MapModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 965EE2BE29D29D45002BDA3D /* MapModel.swift */; };
 		965EE2C129D2AB11002BDA3D /* Indy500.json in Resources */ = {isa = PBXBuildFile; fileRef = 965EE2C029D2AB11002BDA3D /* Indy500.json */; };
 		96DDBA6529CE396000165A9F /* DriverDash.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96DDBA6429CE396000165A9F /* DriverDash.swift */; };
 		96DDBA6729CE396000165A9F /* DataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96DDBA6629CE396000165A9F /* DataView.swift */; };
@@ -28,7 +27,6 @@
 		965EE2B629D164BA002BDA3D /* Serializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Serializer.swift; sourceTree = "<group>"; };
 		965EE2B929D22FD1002BDA3D /* DDLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DDLocation.swift; sourceTree = "<group>"; };
 		965EE2BC29D29CC3002BDA3D /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
-		965EE2BE29D29D45002BDA3D /* MapModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapModel.swift; sourceTree = "<group>"; };
 		965EE2C029D2AB11002BDA3D /* Indy500.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Indy500.json; sourceTree = "<group>"; };
 		96DDBA6129CE396000165A9F /* DriverDash.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DriverDash.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		96DDBA6429CE396000165A9F /* DriverDash.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriverDash.swift; sourceTree = "<group>"; };
@@ -109,7 +107,6 @@
 				96DDBA6629CE396000165A9F /* DataView.swift */,
 				965EE2BC29D29CC3002BDA3D /* MapView.swift */,
 				965EE2C029D2AB11002BDA3D /* Indy500.json */,
-				965EE2BE29D29D45002BDA3D /* MapModel.swift */,
 				96DDBA6829CE396100165A9F /* Assets.xcassets */,
 				96DDBA6A29CE396100165A9F /* Preview Content */,
 			);
@@ -249,7 +246,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				965EE2BA29D22FD1002BDA3D /* DDLocation.swift in Sources */,
-				965EE2BF29D29D45002BDA3D /* MapModel.swift in Sources */,
 				965EE2BD29D29CC3002BDA3D /* MapView.swift in Sources */,
 				96DDBA6729CE396000165A9F /* DataView.swift in Sources */,
 				96DDBA7429CED51A00165A9F /* DriverDashModel.swift in Sources */,
