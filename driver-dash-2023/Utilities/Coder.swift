@@ -8,20 +8,19 @@
 import Foundation
 
 class Coder {
+    enum Packet: String {
+        case front = "front"
+        case back = "back"
+        case lord = "lord"
+    }
+    
     struct FrontPacket: Codable {
         var throttle: Double?
         var angle: Double?
         var tof: Double?
     }
     
-    struct BackPacket: Codable {
-        // gps data
-        struct Lord: Codable {
-            var x: Double
-            var y: Double
-            var z: Double
-        }
-        
+    struct BackPacket: Codable {        
         // acceleration
         struct Accelerometer: Codable {
             var x: Double
@@ -41,8 +40,6 @@ class Coder {
         
         // 1 == engaged
         var safety: Int?
-        
-        var lord: Lord?
         
         var accelerometer: Accelerometer?
         

@@ -29,7 +29,7 @@ struct ContentView: View {
         self.backServerController = DDServer(address: "10.48.155.202", port: 8080, for: .back, with: model)
         self.lordServerController = DDServer(address: "10.48.155.202", port: 8082, for: .lord, with: model)
         
-        // self.locationController = DDLocation(with: model)
+        self.locationController = DDLocation(with: model)
     }
     
     var body: some View {
