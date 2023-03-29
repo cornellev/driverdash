@@ -150,10 +150,16 @@ class DDServer: NSObject {
                             }
                         
                         case .lord:
-                            print(String(bytes: Data(content_b), encoding: .utf8)!)
-//                        let json = Coder().decode(
-//                            from: content_b,
-//                            ofType: Coder.LordPacket.self)
+                            let json = Coder().decode(
+                                from: Data(content_b),
+                                ofType: Coder.LordPacket.self)
+                            // preview parsed data
+                            print(Coder().encode(from: json))
+                        
+                            // save to file
+                            DispatchQueue.global().async {
+                                self.serializer.serialize(data: json)
+                            }
                     }
                 }
             }

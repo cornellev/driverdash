@@ -20,9 +20,8 @@ class Coder {
         var tof: Double?
     }
     
-    struct BackPacket: Codable {        
-        // acceleration
-        struct Accelerometer: Codable {
+    struct BackPacket: Codable {
+        struct Acceleration: Codable {
             var x: Double
             var y: Double
             var z: Double
@@ -41,21 +40,34 @@ class Coder {
         // 1 == engaged
         var safety: Int?
         
-        var accelerometer: Accelerometer?
+        var acceleration: Acceleration?
         
         var rtk: RTK?
     }
     
     struct LordPacket: Codable {
-        var gpsCorrelTimestampTow: Double?
-        var gpsCorrelTimestampWeekNum: Double?
-        var gpsCorrelTimestampFlags: Double?
-        var scaledAccelX: Double?
-        var scaledAccelY: Double?
-        var scaledAccelZ: Double?
-        var roll: Double?
-        var pitch: Double?
-        var yaw: Double?
+        struct Acceleration: Codable {
+            var x: Double
+            var y: Double
+            var z: Double
+        }
+        
+        struct Gyro: Codable {
+            var pitch: Double
+            var roll: Double
+            var yaw: Double
+        }
+        
+        var latitude: Double?
+        var longitude: Double?
+        
+        // LORD's groundSpeed
+        var speed: Double?
+        var heading: Double?
+        
+        var acceleration: Acceleration?
+        
+        var gyro: Gyro?
     }
     
     // assumes all payloads are valid. Will crash if not!
