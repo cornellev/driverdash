@@ -13,12 +13,12 @@ class DDServer: NSObject {
     let port: Int32
     
     let model: DriverDashModel
-    let packet: Coder.Packet
+    let packetType: Coder.Packet
     
-    init(address: String, port: Int, for packet: Coder.Packet, with model: DriverDashModel) {
+    init(address: String, port: Int, for packetType: Coder.Packet, with model: DriverDashModel) {
         self.address = address
         self.port = Int32(port)
-        self.packet = packet
+        self.packetType = packetType
         self.model = model
         
         super.init()
@@ -32,13 +32,13 @@ class DDServer: NSObject {
         let serializer: Serializer!
         
         // string form
-        let packet: String
+        let packetType: Coder.Packet
         
         init(controller: DDServer) {
-            self.serializer = Serializer()
+            self.packetType = controller.packetType
+            self.serializer = Serializer(for: self.packetType)
             // reference needed so we can update state
             self.controller = controller
-            self.packet = self.controller.packet.rawValue
             
             super.init()
         }
@@ -49,26 +49,26 @@ class DDServer: NSObject {
                 port: self.controller.port)
             
             defer {
-                print("Closing down the \(self.packet) server.")
+                print("Closing down the \(self.packetType) server.")
                 server.close()
             }
             
             switch server.listen() {
               case .success:
-                let side = self.controller.packet.rawValue.capitalized
+                let side = self.packetType.rawValue.capitalized
                 print("\(side) server listening at \(self.controller.address):\(self.controller.port)!")
                 
                 while true {
                     // accept() stalls until something connects
                     if let client = server.accept() {
                         // we connected!
-                        print("\(self.packet.capitalized) has a new connection!")
+                        print("\(self.packetType.rawValue.capitalized) has a new connection!")
                         updateStatus(connected: true)
                         
                         handle(client)
                         
                         // if we're here then we disconnected
-                        print("A client disconnected from the \(self.packet) server")
+                        print("A client disconnected from the \(self.packetType.rawValue) server")
                         updateStatus(connected: false)
                     } else {
                         print("accept error")
@@ -85,13 +85,14 @@ class DDServer: NSObject {
             let model = self.controller.model
             
             DispatchQueue.main.async {
-                switch (self.controller.packet) {
+                switch (self.packetType) {
                     case .front:
                         model.frontSocketConnected = connected
                     case .back:
                         model.backSocketConnected = connected
                     case .lord:
                         model.lordSocketConnected = connected
+                    case .phone: ()
                 }
             }
         }
@@ -110,7 +111,7 @@ class DDServer: NSObject {
                 
                 // wait until we have the next length packets
                 if let content_b = client.read(Int(length)) {
-                    switch self.controller.packet {
+                    switch self.controller.packetType {
                         case .front:
                             let json = Coder().decode(
                                 from: Data(content_b),
@@ -160,6 +161,9 @@ class DDServer: NSObject {
                             DispatchQueue.global().async {
                                 self.serializer.serialize(data: json)
                             }
+                        
+                    // should never happen
+                    case .phone: ()
                     }
                 }
             }
