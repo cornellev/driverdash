@@ -11,9 +11,9 @@ import CoreLocation
 class DDLocation: NSObject, CLLocationManagerDelegate {
     private let manager = CLLocationManager()
     private let serializer = Serializer(for: .phone)
-    private let model: DriverDashModel
+    private let model: DDModel
     
-    init(with model: DriverDashModel) {
+    init(with model: DDModel) {
         self.model = model
         
         super.init()
