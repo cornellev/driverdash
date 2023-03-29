@@ -12,6 +12,7 @@ class Coder {
         case front = "front"
         case back = "back"
         case lord = "lord"
+        case phone = "phone"
     }
     
     struct FrontPacket: Codable {
@@ -68,6 +69,13 @@ class Coder {
         var acceleration: Acceleration?
         
         var gyro: Gyro?
+    }
+    
+    struct PhonePacket: Codable {
+        var latitude: Double
+        var longitude: Double
+        var heading: Double
+        var speed: Double
     }
     
     // assumes all payloads are valid. Will crash if not!

@@ -10,6 +10,7 @@ import CoreLocation
 
 class DDLocation: NSObject, CLLocationManagerDelegate {
     private let manager = CLLocationManager()
+    private let serializer = Serializer(for: .phone)
     private let model: DriverDashModel
     
     init(with model: DriverDashModel) {
@@ -27,7 +28,12 @@ class DDLocation: NSObject, CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         //. keep the current location up to date as much as possible
         if let location = locations.last {
-            self.model.location = location
+            serializer.serialize(data: Coder.PhonePacket(
+                latitude: location.coordinate.latitude,
+                longitude: location.coordinate.longitude,
+                // see https://stackoverflow.com/a/39173538
+                heading: max(0, location.course),
+                speed: max(0, location.speed)))
         }
     }
     

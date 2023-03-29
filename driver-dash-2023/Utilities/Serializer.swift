@@ -10,83 +10,65 @@ import Foundation
 class Serializer: NSObject {
     let fileManager = FileManager.default
     
-    let frontFilePath = pathInDocuments(for: "front-daq.json")
-    let backFilePath = pathInDocuments(for: "back-daq.json")
-    let lordFilePath = pathInDocuments(for: "lord.json")
+    var filePath: URL!
+    var fileHandle: FileHandle!
+    let packetType: Coder.Packet
     
-    let frontFile: FileHandle
-    let backFile: FileHandle
-    let lordFile: FileHandle
-    
-    override init() {
+    init(for packetType: Coder.Packet) {
+        self.packetType = packetType
+        super.init()
+        
+        let filename = {
+            switch(packetType) {
+                case .front: return "front-daq.json"
+                case .back: return "back-daq.json"
+                case .lord: return "lord.json"
+                case .phone: return "phone.json"
+        }}()
+        
+        self.filePath = pathInDocuments(for: filename)
+        
         // create empty files if they don't exist
-        for url in [frontFilePath, backFilePath, lordFilePath] {
-            if !fileManager.fileExists(atPath: url.path) {
-                fileManager.createFile(atPath: url.path, contents: "{".data(using: .utf8))
-            }
+        if !fileManager.fileExists(atPath: filePath.path) {
+            let brace = "{".data(using: .utf8)
+            fileManager.createFile(atPath: filePath.path, contents: brace)
         }
-       
-        // open files for writing
-        frontFile = FileHandle(forWritingAtPath: frontFilePath.path)!
-        backFile = FileHandle(forWritingAtPath: backFilePath.path)!
-        lordFile = FileHandle(forWritingAtPath: lordFilePath.path)!
+        
+        self.fileHandle = FileHandle(forWritingAtPath: filePath.path)!
         
         defer {
-            // close files when done with them
-            try! frontFile.close()
-            try! backFile.close()
-            try! lordFile.close()
+            do {
+                try fileHandle.close()
+            } catch let error {
+                print("Unable to close file for \(packetType.rawValue). Error was \(error.localizedDescription)")
+            }
         }
-        
-        super.init()
     }
     
-    func serialize(data: Coder.FrontPacket) {
+    func serialize(data: Codable) {
         let stringified = Coder().encode(from: data)
         let timestamp = getTimestamp(from: localDate())
-        
-        do {
-            try "\"\(timestamp)\": \(stringified),\n".appendToURL(fileURL: frontFilePath)
-        } catch let error {
-            print("Error serializing front packet: \(error.localizedDescription)")
-        }
-    }
 
-    func serialize(data: Coder.BackPacket) {
-        let stringified = Coder().encode(from: data)
-        let timestamp = getTimestamp(from: localDate())
-        
         do {
-            try "\"\(timestamp)\": \(stringified),\n".appendToURL(fileURL: backFilePath)
+            try "\"\(timestamp)\": \(stringified),\n".appendToURL(fileURL: filePath)
         } catch let error {
-            print("Error serializing back packet: \(error.localizedDescription)")
+            print("Error serializing \(packetType.rawValue) packet: \(error.localizedDescription)")
         }
     }
     
-    func serialize(data: Coder.LordPacket) {
-        let stringified = Coder().encode(from: data)
-        let timestamp = getTimestamp(from: localDate())
-        
-        do {
-            try "\"\(timestamp)\": \(stringified),\n".appendToURL(fileURL: lordFilePath)
-        } catch let error {
-            print("Error serializing lord packet: \(error.localizedDescription)")
-        }
-    }
-    
-    static func pathInDocuments(for path: String) -> URL {
+    private func pathInDocuments(for path: String) -> URL {
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
         return paths.first!.appendingPathComponent(path, conformingTo: .text)
     }
     
-    func getTimestamp(from date: Date) -> String {
+    private func getTimestamp(from date: Date) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.timeZone = TimeZone(abbreviation: "GMT")!
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSSSS"
         return dateFormatter.string(from: date)
     }
     
-    func localDate() -> Date {
+    private func localDate() -> Date {
         // we don't have to deal with daylight savings :)
         // copied from https://stackoverflow.com/a/36282832
         let currentDate = Date()
@@ -98,7 +80,6 @@ class Serializer: NSObject {
         return Date(timeInterval: interval, since: currentDate)
     }
 }
-
 
 // super helpful snippet from https://stackoverflow.com/a/60199550
 extension String {
