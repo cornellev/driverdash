@@ -24,7 +24,7 @@ Upon receiving properly-formatted TCP requests, the phone will make correspondin
 }
 ```
 
-You can find the saved files by opening the Files app on the phone and navigating to `On My iPhone > DriverDash`. There you should find two files, one called `back-daq.json` and one called `front-daq.json`. Note that, while the extension is `.json`, these aren't actually valid JSON files. the last comma needs to be replaced with a `}` in order for them to be valid JSON.
+You can find the saved files by opening the Files app on the phone and navigating to `On My iPhone > DriverDash`. There you should find four files: `back-daq.json`, `front-daq.json`, `lord.json`, and `phone.json` (stores GPS stuff from the phone). Note that, while the extension is `.json`, these aren't actually valid JSON files. the last comma needs to be replaced with a `}` in order for them to be valid JSON.
 
 ## Setup
 
@@ -48,8 +48,8 @@ Due to constraints imposed by the ESP32s, we have switched from HTTP/WebSockets 
 
 `DriverDash` (the root view), `DataView`, and `MapView` control the appearance of the iPhone app, laying out the values and numbers and indicators and displaying the data. To handle state and effects, the project uses the Model-View-Controller (MVC) architecture, with `DriverDash` as the view.
 
-`DriverDashModel` is the model, and is responsible for storing the state for the app, such as the current speed and power values and the connection statuses. Every file within the `Controllers/` directory is a controller responsible for managing distinct aspects of the app. `DDLocation` gets location data from the phone to use as a fallback, and `DDServer` runs the TCP servers on separate threads and updates the model when they receive information. Overall, the structure looks like this:
+`DDModel` is the model, and is responsible for storing the state for the app, such as the current speed and power values and the connection statuses. Every file within the `Controllers/` directory is a controller responsible for managing distinct aspects of the app. `DDLocation` gets location data from the phone to use as a fallback, and `DDServer` runs the TCP servers on separate threads and updates the model when they receive information. Overall, the structure looks like this:
 
 ![Illustration of MVC structure](./media/mvc.png)
 
-There are also utility scripts `Coder` and `Serializer` in `Utilities/` which handle encoding/decoding JSON data and writing to files respectively. Because of the way that JSON parsing works in Swift, `Coder` will always have up-to-date typed structs `FrontPacket`, `BackPacket`, and `LordPacket` outlining which data it expects to see sent to each of the three servers.
+There are also utility scripts `Coder` and `Serializer` in `Utilities/` which handle encoding/decoding JSON data and writing to files respectively. Because of the way that JSON parsing works in Swift, `Coder` will always have up-to-date typed structs `FrontPacket`, `BackPacket`, `LordPacket` outlining which data it expects to see sent to each of the three servers (it also has `PhonePacket` which is useful for encoding the phone's GPS data as JSON).
