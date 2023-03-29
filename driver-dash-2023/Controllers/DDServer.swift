@@ -12,10 +12,10 @@ class DDServer: NSObject {
     let address: String
     let port: Int32
     
-    let model: DriverDashModel
+    let model: DDModel
     let packetType: Coder.Packet
     
-    init(address: String, port: Int, for packetType: Coder.Packet, with model: DriverDashModel) {
+    init(address: String, port: Int, for packetType: Coder.Packet, with model: DDModel) {
         self.address = address
         self.port = Int32(port)
         self.packetType = packetType

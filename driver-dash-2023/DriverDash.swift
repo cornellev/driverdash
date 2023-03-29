@@ -17,7 +17,7 @@ struct DriverDash: App {
 }
 
 struct ContentView: View {
-    @ObservedObject private var model = DriverDashModel()
+    @ObservedObject private var model = DDModel()
 
     private var frontServerController: DDServer?
     private var backServerController: DDServer?

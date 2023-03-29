@@ -1,5 +1,5 @@
 //
-//  DriverDashModel.swift
+//  DDModel.swift
 //  driver-dash-2023
 //
 //  Created by Jason Klein on 3/25/23.
@@ -8,7 +8,7 @@
 import SwiftUI
 import CoreLocation
 
-class DriverDashModel: NSObject, ObservableObject {
+class DDModel: NSObject, ObservableObject {
     @Published var speed = 0.0
     @Published var power = 0.0
     
