@@ -13,18 +13,12 @@ class DDServer: NSObject {
     let port: Int32
     
     let model: DriverDashModel
-    let socket: Socket
+    let packet: Coder.Packet
     
-    enum Socket: String {
-        case front = "front"
-        case back = "back"
-        case lord = "lord"
-    }
-    
-    init(address: String, port: Int, for socket: Socket, with model: DriverDashModel) {
+    init(address: String, port: Int, for packet: Coder.Packet, with model: DriverDashModel) {
         self.address = address
         self.port = Int32(port)
-        self.socket = socket
+        self.packet = packet
         self.model = model
         
         super.init()
@@ -37,10 +31,14 @@ class DDServer: NSObject {
         let controller: DDServer!
         let serializer: Serializer!
         
+        // string form
+        let packet: String
+        
         init(controller: DDServer) {
             self.serializer = Serializer()
             // reference needed so we can update state
             self.controller = controller
+            self.packet = self.controller.packet.rawValue
             
             super.init()
         }
@@ -51,26 +49,26 @@ class DDServer: NSObject {
                 port: self.controller.port)
             
             defer {
-                print("Closing down the \(self.controller.socket.rawValue) server.")
+                print("Closing down the \(self.packet) server.")
                 server.close()
             }
             
             switch server.listen() {
               case .success:
-                let side = self.controller.socket.rawValue.capitalized
+                let side = self.controller.packet.rawValue.capitalized
                 print("\(side) server listening at \(self.controller.address):\(self.controller.port)!")
                 
                 while true {
                     // accept() stalls until something connects
                     if let client = server.accept() {
                         // we connected!
-                        print("\(self.controller.socket.rawValue.capitalized) has a new connection!")
+                        print("\(self.packet.capitalized) has a new connection!")
                         updateStatus(connected: true)
                         
                         handle(client)
                         
                         // if we're here then we disconnected
-                        print("A client disconnected from the \(self.controller.socket.rawValue) server")
+                        print("A client disconnected from the \(self.packet) server")
                         updateStatus(connected: false)
                     } else {
                         print("accept error")
@@ -87,7 +85,7 @@ class DDServer: NSObject {
             let model = self.controller.model
             
             DispatchQueue.main.async {
-                switch (self.controller.socket) {
+                switch (self.controller.packet) {
                     case .front:
                         model.frontSocketConnected = connected
                     case .back:
@@ -112,7 +110,7 @@ class DDServer: NSObject {
                 
                 // wait until we have the next length packets
                 if let content_b = client.read(Int(length)) {
-                    switch self.controller.socket {
+                    switch self.controller.packet {
                         case .front:
                             let json = Coder().decode(
                                 from: Data(content_b),
