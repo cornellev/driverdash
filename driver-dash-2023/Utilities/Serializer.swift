@@ -12,28 +12,30 @@ class Serializer: NSObject {
     
     let frontFilePath = pathInDocuments(for: "front-daq.json")
     let backFilePath = pathInDocuments(for: "back-daq.json")
+    let lordFilePath = pathInDocuments(for: "lord.json")
     
-    let frontFile: FileHandle!
-    let backFile: FileHandle!
+    let frontFile: FileHandle
+    let backFile: FileHandle
+    let lordFile: FileHandle
     
     override init() {
         // create empty files if they don't exist
-        if !fileManager.fileExists(atPath: frontFilePath.path) {
-            fileManager.createFile(atPath: frontFilePath.path, contents: "{".data(using: .utf8))
+        for url in [frontFilePath, backFilePath, lordFilePath] {
+            if !fileManager.fileExists(atPath: url.path) {
+                fileManager.createFile(atPath: url.path, contents: "{".data(using: .utf8))
+            }
         }
-        
-        if !fileManager.fileExists(atPath: backFilePath.path) {
-            fileManager.createFile(atPath: backFilePath.path, contents: "{".data(using: .utf8))
-        }
-        
+       
         // open files for writing
-        frontFile = FileHandle(forWritingAtPath: frontFilePath.path)
-        backFile = FileHandle(forWritingAtPath: backFilePath.path)
+        frontFile = FileHandle(forWritingAtPath: frontFilePath.path)!
+        backFile = FileHandle(forWritingAtPath: backFilePath.path)!
+        lordFile = FileHandle(forWritingAtPath: lordFilePath.path)!
         
         defer {
             // close files when done with them
             try! frontFile.close()
             try! backFile.close()
+            try! lordFile.close()
         }
         
         super.init()
@@ -46,7 +48,7 @@ class Serializer: NSObject {
         do {
             try "\"\(timestamp)\": \(stringified),\n".appendToURL(fileURL: frontFilePath)
         } catch let error {
-            print("Error serializing: \(error.localizedDescription)")
+            print("Error serializing front packet: \(error.localizedDescription)")
         }
     }
 
@@ -57,7 +59,18 @@ class Serializer: NSObject {
         do {
             try "\"\(timestamp)\": \(stringified),\n".appendToURL(fileURL: backFilePath)
         } catch let error {
-            print("Error serializing: \(error.localizedDescription)")
+            print("Error serializing back packet: \(error.localizedDescription)")
+        }
+    }
+    
+    func serialize(data: Coder.LordPacket) {
+        let stringified = Coder().encode(from: data)
+        let timestamp = getTimestamp(from: localDate())
+        
+        do {
+            try "\"\(timestamp)\": \(stringified),\n".appendToURL(fileURL: lordFilePath)
+        } catch let error {
+            print("Error serializing lord packet: \(error.localizedDescription)")
         }
     }
     
