@@ -23,7 +23,7 @@ struct ContentView: View {
     private var lordServerController: DDServer?
     private var locationController: DDLocation?
     
-    private let ip = "10.49.20.4"
+    private let ip = "172.20.10.1"
     
     init() {
         self.daqServerController = DDServer(address: ip, port: 8080, for: .daq, with: model)
