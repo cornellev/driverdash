@@ -2,15 +2,20 @@ PODS:
   - SwiftSocket (2.0.2)
 
 DEPENDENCIES:
-  - SwiftSocket
+  - SwiftSocket (from `https://github.com/anotheros/SwiftSocket.git`)
 
-SPEC REPOS:
-  trunk:
-    - SwiftSocket
+EXTERNAL SOURCES:
+  SwiftSocket:
+    :git: https://github.com/anotheros/SwiftSocket.git
+
+CHECKOUT OPTIONS:
+  SwiftSocket:
+    :commit: 65922ad4e8800497f72e8e20ba15cbf212136d70
+    :git: https://github.com/anotheros/SwiftSocket.git
 
 SPEC CHECKSUMS:
-  SwiftSocket: 6f4c9c63fbc5c1d61188936bb3c599fd546f40ae
+  SwiftSocket: c8d482e867ae4d3eb4c769e9382e123c1f1f833b
 
-PODFILE CHECKSUM: 7510f33b1f9a614211e363c4dc53317706fe49ec
+PODFILE CHECKSUM: 765965ee0ab32757b271aa17b39d85f8f5b2ecab
 
 COCOAPODS: 1.12.0
