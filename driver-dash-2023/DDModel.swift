@@ -14,6 +14,7 @@ class DDModel: NSObject, ObservableObject {
     
     @Published var daqSocketConnected = false
     @Published var lordSocketConnected = false
+    @Published var phoneConnected = false
     
     var location: CLLocation?
 }
