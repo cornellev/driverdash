@@ -24,7 +24,7 @@ Upon receiving properly-formatted TCP requests, the phone will make correspondin
 }
 ```
 
-You can find the saved files by opening the Files app on the phone and navigating to `On My iPhone > DriverDash`. There you should find four files: `back-daq.json`, `front-daq.json`, `lord.json`, and `phone.json` (stores GPS stuff from the phone). Note that, while the extension is `.json`, these aren't actually valid JSON files. the last comma needs to be replaced with a `}` in order for them to be valid JSON.
+You can find the saved files by opening the Files app on the phone and navigating to `On My iPhone > DriverDash`. There you should find three files: `daq.json`, `lord.json`, and `phone.json` (stores GPS stuff from the phone). Note that, while the extension is `.json`, these aren't actually valid JSON files. the last comma needs to be replaced with a `}` in order for them to be valid JSON.
 
 ## Setup
 
@@ -40,7 +40,7 @@ _The server aspect of the app can only be tested when the app is run from a phys
 
 Assuming that the phone is connected to WiFi, you can find the phone's IP address by going to `Settings > WiFi > (i) next to connected network name > IP Address`, and the app will print to the console the port that the server will be running on (which should be `8080` because I hardcoded it). An IP address might look like `10.48.141.41`. When connected over cellular, the IP address is sometimes also aliased to `cev-telemetry-iphone.local`, which is quite convenient (`172.20.10.1` is also a good one to try). If that doesn't work, make sure that your laptop and the phone are connected to the same network and then run `arp -a` in a terminal. This will give you a bunch of IPs to try.
 
-Due to constraints imposed by the ESP32s, we have switched from HTTP/WebSockets to raw TCP requests. The server on the phone is now a simple TCP server listening for requests in a `while true {}` loop on a different thread. Test the TCP server by running `test.py 10.48.141.41` (replacing the actual IP address there). If all goes well, the dashboard should update with some new values, the connected indicators at the bottom of the phone UI should turn green for a bit, and there should be new content in the `.json` files.
+Due to constraints imposed by the ESP32s, we have switched from HTTP/WebSockets to raw TCP requests. The server on the phone is now a simple TCP server listening for requests in a `while true {}` loop on a different thread. Test the TCP server by running `python test.py 10.48.141.41` (replacing the actual IP address there). If all goes well, the dashboard should update with some new values, the connected indicators at the bottom of the phone UI should turn green for a bit, and there should be new content in the `.json` files.
 
 `test.py` works by making a connection to the front and back daq servers and sending random data. Call it with `--repetitions 5` to have it make five requests each time instead of one (works with any positive number).
 

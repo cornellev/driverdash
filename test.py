@@ -33,13 +33,13 @@ def main():
     print("Sending payload to LORD server")
     # create the TCP socket object
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client_socket.connect((args.ip, 8082))
+    client_socket.connect((args.ip, 8081))
     message = r'{"latitude": 42.444288, "longitude": -76.483284, "speed": 0.0, "heading": 0.0}'
     print(message)
     client_socket.sendall(len(message).to_bytes(4, "little"))
     client_socket.sendall(message.encode())
     time.sleep(.5)
-    message = r'{"acceleration": {"x": 0.167943, "y": -0.313749, "z": -1.009234}, "gyro":{"roll": -0.050956, "pitch": 0.0796, "yaw": 2.837746}}'
+    message = r'{"acceleration": {"x": 0.167943, "y": -0.313749, "z": -1.009234}, "gyro":{"roll": -0.050956, "pitch": 0.0796, "yaw": 2.837746}, "speed": 20.6, "groundSpeed": 20.5234}'
     print(message)
     client_socket.sendall(len(message).to_bytes(4, "little"))
     client_socket.sendall(message.encode())
