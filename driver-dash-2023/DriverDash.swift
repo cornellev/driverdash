@@ -53,6 +53,9 @@ struct ContentView: View {
                     Text("LORD")
                         .foregroundColor(model.lordSocketConnected ? Color.green : Color.red)
                         .bold()
+                    Text("Phone")
+                        .foregroundColor(model.phoneConnected ? Color.green : Color.red)
+                        .bold()
                 }.padding([.bottom], 20)
             }
                 .frame(maxWidth: .infinity)

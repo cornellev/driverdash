@@ -26,7 +26,12 @@ class DDLocation: NSObject, CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        //. keep the current location up to date as much as possible
+        // update connection status
+        if !model.phoneConnected {
+            model.phoneConnected = true
+        }
+        
+        // keep the current location up to date as much as possible
         if let location = locations.last {
             serializer.serialize(data: Coder.PhonePacket(
                 latitude: location.coordinate.latitude,
@@ -40,5 +45,6 @@ class DDLocation: NSObject, CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         // todo: is there a better way to handle errors than this?
         print("Whoopsies. Had trouble getting the location.")
+        model.phoneConnected = false
     }
 }
