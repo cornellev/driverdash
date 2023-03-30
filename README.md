@@ -1,3 +1,5 @@
+_**Attention!** Are you a software or electrical team member at competition looking to troubleshoot the app? Are you just curious as to how to actually use it? Check out [SETUP.md](./SETUP.md) for instructions on how to get it up and running and what to do when things go wrong._
+
 # Driver Dash 2023
 
 _Jason Klein '26, Ari Kapelyan '25, Kalehiwot Dessalgne '25, Drew Wilenzick '26_
@@ -38,7 +40,7 @@ _Since this is a native iOS app, it requires a Mac with XCode to build!_
 
 _The server aspect of the app can only be tested when the app is run from a physical phone; it will not work in the Apple Simulator app!_
 
-Assuming that the phone is connected to WiFi, you can find the phone's IP address by going to `Settings > WiFi > (i) next to connected network name > IP Address`, and the app will print to the console the port that the server will be running on (which should be `8080` because I hardcoded it). An IP address might look like `10.48.141.41`. When connected over cellular, the IP address is sometimes also aliased to `cev-telemetry-iphone.local`, which is quite convenient (`172.20.10.1` is also a good one to try). If that doesn't work, make sure that your laptop and the phone are connected to the same network and then run `arp -a` in a terminal. This will give you a bunch of IPs to try.
+Assuming that the phone is connected to WiFi, you can find the phone's IP address by going to `Settings > WiFi > (i) next to connected network name > IP Address`, and the app will print to the console the port that the server will be running on (which should be `8080` because I hardcoded it). An IP address might look like `10.48.141.41`. When connected over cellular, the IP address is most often `172.20.10.1`. If that doesn't work, make sure that your laptop and the phone are connected to the same network and then run `arp -a` in a terminal. Pick the IP address with MAC address `72:81:eb:eb:aa:64`.
 
 Due to constraints imposed by the ESP32s, we have switched from HTTP/WebSockets to raw TCP requests. The server on the phone is now a simple TCP server listening for requests in a `while true {}` loop on a different thread. Test the TCP server by running `python test.py 10.48.141.41` (replacing the actual IP address there). If all goes well, the dashboard should update with some new values, the connected indicators at the bottom of the phone UI should turn green for a bit, and there should be new content in the `.json` files.
 
