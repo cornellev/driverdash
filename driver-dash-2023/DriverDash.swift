@@ -19,14 +19,14 @@ struct DriverDash: App {
 struct ContentView: View {
     @ObservedObject private var model = DDModel()
 
-    private var backServerController: DDServer?
+    private var daqServerController: DDServer?
     private var lordServerController: DDServer?
     private var locationController: DDLocation?
     
     private let ip = "10.49.20.4"
     
     init() {
-        self.backServerController = DDServer(address: ip, port: 8080, for: .back, with: model)
+        self.daqServerController = DDServer(address: ip, port: 8080, for: .daq, with: model)
         self.lordServerController = DDServer(address: ip, port: 8081, for: .lord, with: model)
         
         self.locationController = DDLocation(with: model)
@@ -47,8 +47,8 @@ struct ContentView: View {
                 
                 // connection indicators
                 HStack(spacing: 50) {
-                    Text("Back")
-                        .foregroundColor(model.backSocketConnected ? Color.green : Color.red)
+                    Text("DAQ")
+                        .foregroundColor(model.daqSocketConnected ? Color.green : Color.red)
                         .bold()
                     Text("LORD")
                         .foregroundColor(model.lordSocketConnected ? Color.green : Color.red)

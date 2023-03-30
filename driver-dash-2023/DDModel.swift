@@ -12,7 +12,7 @@ class DDModel: NSObject, ObservableObject {
     @Published var speed = 0.0
     @Published var power = 0.0
     
-    @Published var backSocketConnected = false
+    @Published var daqSocketConnected = false
     @Published var lordSocketConnected = false
     
     var location: CLLocation?
