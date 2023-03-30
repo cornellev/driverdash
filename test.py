@@ -14,22 +14,6 @@ def main():
 
     args = parser.parse_args()
 
-    print("Sending payload to front server")
-    # create the TCP socket object
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client_socket.connect((args.ip, 8081))
-    # send a message to the server
-    for _ in range(args.repetitions):
-        message = '{{"throttle": {throttle}, "angle": {angle}, "tof": {tof}}}'.format(
-            throttle=random.randrange(0, 100),
-            angle=random.randrange(0, 359),
-            tof=random.random())
-        print(message)
-        client_socket.sendall(len(message).to_bytes(4, "little"))
-        client_socket.sendall(message.encode())
-        time.sleep(.5)
-    client_socket.close()
-
     print("Sending payload to back server")
     # create the TCP socket object
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
