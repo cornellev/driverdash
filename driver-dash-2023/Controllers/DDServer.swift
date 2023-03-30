@@ -123,12 +123,6 @@ class DDServer: NSObject {
                                 if let power = json.voltage {
                                     self.controller.model.power = power
                                 }
-                                
-                                if let rpm = json.rpm {
-                                    let diameter = 0.605 // meters
-                                    let speed = Double(rpm) * diameter * Double.pi * 60 / 1000 // km/h
-                                    self.controller.model.speed = speed
-                                }
                             }
                             
                             // defer file-writing to be async
@@ -142,6 +136,14 @@ class DDServer: NSObject {
                                 ofType: Coder.LordPacket.self)
                             // preview parsed data
                             print(Coder().encode(from: json))
+                        
+                            // use speed from lord since we killed the RPM magnets :(
+                            DispatchQueue.main.async {
+                                // replace with phone speed if this fails
+                                if let speed = json.groundSpeed {
+                                    self.controller.model.speed = speed
+                                }
+                            }
                         
                             // save to file
                             DispatchQueue.global().async {
