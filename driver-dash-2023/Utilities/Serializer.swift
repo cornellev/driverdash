@@ -20,7 +20,6 @@ class Serializer: NSObject {
         
         let filename = {
             switch(packetType) {
-                case .front: return "front-daq.json"
                 case .back: return "back-daq.json"
                 case .lord: return "lord.json"
                 case .phone: return "phone.json"

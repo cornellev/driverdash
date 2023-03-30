@@ -9,16 +9,9 @@ import Foundation
 
 class Coder {
     enum Packet: String {
-        case front = "front"
         case back = "back"
         case lord = "lord"
         case phone = "phone"
-    }
-    
-    struct FrontPacket: Codable {
-        var throttle: Double?
-        var angle: Double?
-        var tof: Double?
     }
     
     struct BackPacket: Codable {
@@ -62,7 +55,7 @@ class Coder {
         var latitude: Double?
         var longitude: Double?
         
-        // LORD's groundSpeed
+        var groundSpeed: Double?
         var speed: Double?
         var heading: Double?
         
