@@ -86,8 +86,8 @@ class DDServer: NSObject {
             
             DispatchQueue.main.async {
                 switch (self.packetType) {
-                    case .back:
-                        model.backSocketConnected = connected
+                    case .daq:
+                        model.daqSocketConnected = connected
                     case .lord:
                         model.lordSocketConnected = connected
                     case .phone: ()
@@ -110,10 +110,10 @@ class DDServer: NSObject {
                 // wait until we have the next length packets
                 if let content_b = client.read(Int(length)) {
                     switch self.controller.packetType {
-                        case .back:
+                        case .daq:
                             let json = Coder().decode(
                                 from: Data(content_b),
-                                ofType: Coder.BackPacket.self)
+                                ofType: Coder.DAQPacket.self)
                             // preview parsed data
                             print(Coder().encode(from: json))
                             

@@ -9,12 +9,12 @@ import Foundation
 
 class Coder {
     enum Packet: String {
-        case back = "back"
+        case daq = "daq"
         case lord = "lord"
         case phone = "phone"
     }
     
-    struct BackPacket: Codable {
+    struct DAQPacket: Codable {
         struct Acceleration: Codable {
             var x: Double
             var y: Double
