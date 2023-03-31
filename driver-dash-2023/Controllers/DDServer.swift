@@ -34,11 +34,18 @@ class DDServer: NSObject {
         // string form
         let packetType: Coder.Packet
         
+        private var dashboardUpdater: DashboardUpdater?
+        
         init(controller: DDServer) {
             self.packetType = controller.packetType
             self.serializer = Serializer(for: self.packetType)
             // reference needed so we can update state
             self.controller = controller
+            
+            // only the LORD server needs to update the dashboard for now
+            if packetType == .lord {
+                self.dashboardUpdater = DashboardUpdater()
+            }
             
             super.init()
         }
@@ -146,9 +153,12 @@ class DDServer: NSObject {
                                 }
                             }
                         
-                        if let speed = json.groundSpeed {
-                            updateLiveTimingDash(at: "updateRtkData", with: "{\"speed\":\(speed)}")
-                        }
+                            if let speed = json.groundSpeed {
+                                // throttle updates so that HTTP doesn't get bogged down with requests
+                                if let dashboardUpdater = self.dashboardUpdater, dashboardUpdater.canUpdate(now: Date()) {
+                                    dashboardUpdater.update(at: "updateRtkData", with: "{\"speed\":\(speed)}")
+                                }
+                            }
                         
                             // save to file
                             DispatchQueue.global().async {
@@ -161,38 +171,46 @@ class DDServer: NSObject {
                 }
             }
         }
-    
-        private func updateLiveTimingDash(at endpoint: String, with string: String) {
-            // see https://stackoverflow.com/a/26365148
-            var request = URLRequest(url: URL(string: "https://live-timing-dash.herokuapp.com/\(endpoint)")!)
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.httpMethod = "POST"
-            request.httpBody = string.data(using: .utf8)
+        
+        private class DashboardUpdater {
+            var lastUpdate = Date()
             
-            print(request)
-            
-            let task = URLSession.shared.dataTask(with: request) { data, response, error in
-                guard
-                    let data = data,
-                    let response = response as? HTTPURLResponse,
-                    error == nil
-                else {
-                    print("error", error ?? URLError(.badServerResponse))
-                    return
-                }
-                
-                // check for http errors
-                guard (200 ... 299) ~= response.statusCode else {
-                    print("statusCode should be 2xx, but is \(response.statusCode)")
-                    print("response = \(response)")
-                    return
-                }
-                
-                // do whatever you want with the `data`, e.g.:
-                print(String(data: data, encoding: .utf8)!)
+            func canUpdate(now: Date) -> Bool {
+                let seconds = now.timeIntervalSince(lastUpdate)
+                return seconds > 1
             }
             
-            task.resume()
+            func update(at endpoint: String, with string: String) {
+                // see https://stackoverflow.com/a/26365148
+                var request = URLRequest(url: URL(string: "https://live-timing-dash.herokuapp.com/\(endpoint)")!)
+                request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                request.httpMethod = "POST"
+                request.httpBody = string.data(using: .utf8)
+                
+                let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                    guard
+                        let data = data,
+                        let response = response as? HTTPURLResponse,
+                        error == nil
+                    else {
+                        print("error", error ?? URLError(.badServerResponse))
+                        return
+                    }
+                    
+                    // check for http errors
+                    guard (200 ... 299) ~= response.statusCode else {
+                        print("statusCode should be 2xx, but is \(response.statusCode)")
+                        print("response = \(response)")
+                        return
+                    }
+                    
+                    // do whatever you want with the `data`, e.g.:
+                    print(String(data: data, encoding: .utf8)!)
+                    self.lastUpdate = Date()
+                }
+                
+                task.resume()
+            }
         }
     }
 }
