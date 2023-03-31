@@ -71,6 +71,7 @@ class DDServer: NSObject {
                         print("A client disconnected from the \(self.packetType.rawValue) server")
                         updateStatus(connected: false)
                     } else {
+                        updateStatus(connected: false)
                         print("accept error")
                     }
                 }
@@ -145,6 +146,10 @@ class DDServer: NSObject {
                                 }
                             }
                         
+                        if let speed = json.groundSpeed {
+                            updateLiveTimingDash(at: "updateRtkData", with: "{\"speed\":\(speed)}")
+                        }
+                        
                             // save to file
                             DispatchQueue.global().async {
                                 self.serializer.serialize(data: json)
@@ -155,6 +160,39 @@ class DDServer: NSObject {
                     }
                 }
             }
+        }
+    
+        private func updateLiveTimingDash(at endpoint: String, with string: String) {
+            // see https://stackoverflow.com/a/26365148
+            var request = URLRequest(url: URL(string: "https://live-timing-dash.herokuapp.com/\(endpoint)")!)
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.httpMethod = "POST"
+            request.httpBody = string.data(using: .utf8)
+            
+            print(request)
+            
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                guard
+                    let data = data,
+                    let response = response as? HTTPURLResponse,
+                    error == nil
+                else {
+                    print("error", error ?? URLError(.badServerResponse))
+                    return
+                }
+                
+                // check for http errors
+                guard (200 ... 299) ~= response.statusCode else {
+                    print("statusCode should be 2xx, but is \(response.statusCode)")
+                    print("response = \(response)")
+                    return
+                }
+                
+                // do whatever you want with the `data`, e.g.:
+                print(String(data: data, encoding: .utf8)!)
+            }
+            
+            task.resume()
         }
     }
 }
