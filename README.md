@@ -32,9 +32,10 @@ You can find the saved files by opening the Files app on the phone and navigatin
 
 _Since this is a native iOS app, it requires a Mac with XCode to build!_
 
-1. Make sure that you have [cocoapods](https://guides.cocoapods.org/using/getting-started.html#installation) installed.
+1. Make sure that you have [Xcode development tools](https://stackoverflow.com/a/9329325) and [cocoapods](https://guides.cocoapods.org/using/getting-started.html#installation) installed. If the initial instructions on the CocoaPods website don't work right away (like there's some issue with ActiveSupport or whatever), install a newer version with `brew install ruby`, and then attempt installation again using _this version_ with `sudo gem install -n /usr/local/bin cocoapods`.
 2. Navigate into the directory containing `Podfile` and run `pod install` from the terminal.
 3. Run `open driver-dash-2023.xcworkspace` (not `.xcodeproj`)!
+4. Connect the development phone, select it as a build target, and press build
 
 ## Testing
 
