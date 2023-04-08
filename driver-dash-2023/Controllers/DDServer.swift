@@ -153,10 +153,12 @@ class DDServer: NSObject {
                                 }
                             }
                         
-                            if let speed = json.groundSpeed {
+                        if let speed = json.groundSpeed,
+                           let lat = json.latitude,
+                           let long = json.longitude {
                                 // throttle updates so that HTTP doesn't get bogged down with requests
                                 if let dashboardUpdater = self.dashboardUpdater, dashboardUpdater.canUpdate(now: Date()) {
-                                    dashboardUpdater.update(at: "updateRtkData", with: "{\"speed\":\(speed)}")
+                                    dashboardUpdater.update(at: "updateRtkData", with: "{\"speed\":\(speed), \"rtk_lat\": \(lat), \"rtk_long\": \(long)}")
                                 }
                             }
                         
