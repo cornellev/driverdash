@@ -56,3 +56,11 @@ Due to constraints imposed by the ESP32s, we have switched from HTTP/WebSockets 
 ![Illustration of MVC structure](./media/mvc.png)
 
 There are also utility scripts `Coder` and `Serializer` in `Utilities/` which handle encoding/decoding JSON data and writing to files respectively. Because of the way that JSON parsing works in Swift, `Coder` will always have up-to-date typed structs `FrontPacket`, `BackPacket`, `LordPacket` outlining which data it expects to see sent to each of the three servers (it also has `PhonePacket` which is useful for encoding the phone's GPS data as JSON).
+
+## Competition Update
+
+There were two major additions at competition: a lap counter, and a stopwatch.
+
+`Lap Counter` was a simple button that increases the number displayed on the button by one. This number begins at 1 on each build. The use of this is because of the long length of the run, making it easy to lose count of what lap you're on (and getting this wrong would be detrimental to the energy efficiency of the run). This does require the driver to press a button, but they have plenty of time to do so (it's mostly just a tool for them!). 
+
+`Stopwatch` was a simple start/stop/reset stopwatch to count up from the beginning of the run. This is because we realized that we'd run out of time to connect the live-timing-dash to the app, which would allow people on the sidelines to press start and stop for the most accurate timing data. This is necessary though so that the driver knows how much time they have left from the 35 minutes allowed for a run. The code for this stopwatch was taken heavily from [this site](https://medium.com/geekculture/build-a-stopwatch-in-just-3-steps-using-swiftui-778c327d214b). 
